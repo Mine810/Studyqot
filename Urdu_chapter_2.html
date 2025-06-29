@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhabhi Jaan - Class 10 Notes</title>
+    
+    <!-- Google Fonts: Noto Nastaliq Urdu for authentic script & Poppins for headings -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        /* Use Poppins for English/Headings for a modern look */
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Main container background */
+        .main-bg {
+            background-color: #1e1e1e;
+        }
+
+        /* Card styles */
+        .card {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Active tab style */
+        .tab-active {
+            background-color: #4a90e2;
+            color: #ffffff;
+            border-bottom: 2px solid #ffffff;
+        }
+        
+        .tab {
+            transition: background-color 0.3s ease;
+        }
+
+        .tab:hover {
+            background-color: #3a3a3a;
+        }
+
+        /* Accordion styles */
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .accordion-header:hover {
+            background-color: #3a3a3a;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: #222;
+        }
+        .accordion-content.active {
+            padding: 1rem;
+            max-height: 500px; /* Adjust as needed */
+        }
+        
+        /* Custom heading style with underline */
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 70px;
+            height: 3px;
+            background: linear-gradient(90deg, #4a90e2, #50e3c2);
+            border-radius: 2px;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-6xl font-bold font-poppins text-white">
+                محمد علی کی طرف سے <span class="text-blue-400">(بھابھی جان)</span>
+            </h1>
+            <p class="text-lg text-gray-400 mt-2 font-poppins">Complete Notes for Bihar Board Class 10 Exam</p>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-bg rounded-lg shadow-2xl p-4 md:p-6">
+            <!-- Navigation Tabs -->
+            <div id="tabs" class="flex flex-wrap justify-center border-b border-gray-700 mb-6">
+                <button data-target="author" class="tab tab-active text-lg px-6 py-3 font-semibold font-poppins">مصنف</button>
+                <button data-target="characters" class="tab text-lg px-6 py-3 font-semibold font-poppins">کردار</button>
+                <button data-target="summary" class="tab text-lg px-6 py-3 font-semibold font-poppins">خلاصہ</button>
+                <button data-target="points" class="tab text-lg px-6 py-3 font-semibold font-poppins">اہم نکات</button>
+                <button data-target="qa" class="tab text-lg px-6 py-3 font-semibold font-poppins">سوال و جواب</button>
+            </div>
+
+            <!-- Content Sections -->
+            <div id="content-sections">
+                <!-- Author Section -->
+                <div id="author" class="tab-content">
+                     <h2 class="section-title text-3xl text-white mb-6">مصنف کا تعارف: سہیل عظیم آبادی</h2>
+                    <div class="card rounded-lg p-6">
+                        <div class="grid md:grid-cols-2 gap-6 text-lg">
+                            <p><strong><i class="fas fa-user-edit text-blue-400 ml-2"></i>اصل نام:</strong> سید مجیب الرحمن</p>
+                            <p><strong><i class="fas fa-pen-nib text-blue-400 ml-2"></i>تخلص:</strong> سہیل</p>
+                            <p><strong><i class="fas fa-birthday-cake text-blue-400 ml-2"></i>پیدائش:</strong> 1911ء, پٹنہ</p>
+                            <p><strong><i class="fas fa-book-dead text-blue-400 ml-2"></i>انتقال:</strong> 1980ء</p>
+                            <p class="md:col-span-2"><strong><i class="fas fa-landmark text-blue-400 ml-2"></i>خاندان:</strong> ایک زمیندار گھرانے سے تعلق رکھتے تھے۔</p>
+                            <p class="md:col-span-2"><strong><i class="fas fa-feather-alt text-blue-400 ml-2"></i>ادبی خدمات:</strong> ابتدا میں شاعری کی, بعد میں افسانہ نگاری کی طرف مائل ہوئے۔ ایک اخبار 'ساتھی' بھی نکالا۔</p>
+                        </div>
+                        <div class="mt-6">
+                            <h3 class="text-xl font-bold text-white mb-3 font-poppins">Major Works</h3>
+                            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="p-4 bg-gray-800 rounded-lg text-center">
+                                    <h4 class="font-bold text-blue-300">افسانوی مجموعے</h4>
+                                    <ul class="list-disc list-inside mt-2">
+                                        <li>چار چہرے</li>
+                                        <li>الاؤ</li>
+                                        <li>آدمی کے روپ</li>
+                                    </ul>
+                                </div>
+                               <div class="p-4 bg-gray-800 rounded-lg text-center">
+                                    <h4 class="font-bold text-blue-300">ناول</h4>
+                                    <p class="mt-2">بے جڑ کے پودے</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Characters Section -->
+                <div id="characters" class="tab-content hidden">
+                    <h2 class="section-title text-3xl text-white mb-6">کہانی کے کردار</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Ruqaiyya Bhabi -->
+                        <div class="card p-6 text-center">
+                            <i class="fas fa-female text-4xl text-blue-400 mb-3"></i>
+                            <h3 class="text-2xl font-bold text-white">رقیہ بھابھی</h3>
+                            <p class="mt-2 text-gray-400">کہانی کا مرکزی کردار۔ ہمت، قربانی اور محبت کی ایک روشن مثال۔</p>
+                        </div>
+                        <!-- Akhtar -->
+                        <div class="card p-6 text-center">
+                            <i class="fas fa-user-graduate text-4xl text-blue-400 mb-3"></i>
+                            <h3 class="text-2xl font-bold text-white">اختر</h3>
+                            <p class="mt-2 text-gray-400">کہانی کا راوی اور رقیہ بھابھی کا دیور۔</p>
+                        </div>
+                        <!-- Bhai Jaan -->
+                        <div class="card p-6 text-center">
+                            <i class="fas fa-user-tie text-4xl text-blue-400 mb-3"></i>
+                            <h3 class="text-2xl font-bold text-white">بھائی جان</h3>
+                            <p class="mt-2 text-gray-400">رقیہ بھابھی کے شوہر، جو سیاسی سرگرمیوں کی وجہ سے جیل میں تھے۔</p>
+                        </div>
+                        <!-- Shammi -->
+                        <div class="card p-6 text-center">
+                            <i class="fas fa-user-friends text-4xl text-blue-400 mb-3"></i>
+                            <h3 class="text-2xl font-bold text-white">شمی</h3>
+                            <p class="mt-2 text-gray-400">ایک غریب طالبہ، جس کی مدد رقیہ بھابھی کرتی ہیں۔</p>
+                        </div>
+                        <!-- Rehana -->
+                         <div class="card p-6 text-center">
+                            <i class="fas fa-child text-4xl text-blue-400 mb-3"></i>
+                            <h3 class="text-2xl font-bold text-white">ریحانہ</h3>
+                            <p class="mt-2 text-gray-400">رقیہ بھابھی کی بیٹی۔</p>
+                        </div>
+                        <!-- Jameela -->
+                        <div class="card p-6 text-center">
+                           <i class="fas fa-heart text-4xl text-blue-400 mb-3"></i>
+                           <h3 class="text-2xl font-bold text-white">جمیلہ</h3>
+                           <p class="mt-2 text-gray-400">وہ لڑکی جس سے اختر شادی کرنا چاہتا ہے۔</p>
+                       </div>
+                    </div>
+                </div>
+
+                <!-- Summary Section -->
+                <div id="summary" class="tab-content hidden">
+                    <h2 class="section-title text-3xl text-white mb-6">افسانے کا خلاصہ</h2>
+                    <div class="card rounded-lg p-6 space-y-4 text-lg leading-relaxed">
+                        <p>افسانہ "بھابھی جان" سہیل عظیم آبادی کا ایک شاہکار ہے جس کا مرکزی کردار "رقیہ بھابھی" ہیں۔ رقیہ بھابھی ایک ایسی خاتون ہیں جو بے پناہ مشکلات اور ذمہ داریوں کے باوجود ہمت اور استقامت کا پہاڑ بنی رہتی ہیں۔</p>
+                        <p>ان کے شوہر سیاسی سرگرمیوں کی وجہ سے اکثر جیل میں رہتے ہیں، جس کی وجہ سے گھر کی تمام مالی اور جذباتی ذمہ داریاں ان کے کندھوں پر ہیں۔ وہ ایک کالج میں لیکچرر کے طور پر کام کرتی ہیں اور ٹیوشن بھی پڑھاتی ہیں تاکہ گھر کا خرچ چلا سکیں۔</p>
+                        <p>کہانی میں ان کی قربانی کا سب سے بڑا مظہر اس وقت سامنے آتا ہے جب وہ ایک غریب طالبہ "شمی" کے بھائی کی یونیورسٹی فیس ادا کرنے کے لیے اپنی بیٹی "ریحانہ" کی سونے کی چوڑیاں فروخت کرنے کے لیے دے دیتی ہیں۔</p>
+                        <p>وہ نہ صرف اپنے خاندان کا خیال رکھتی ہیں بلکہ اپنے دیور "اختر" کی بھی حوصلہ افزائی کرتی ہیں اور نئے لکھنے والوں کو خطوط کے ذریعے رہنمائی فراہم کرتی ہیں۔ کہانی کے آخر میں جب انہیں اپنے شوہر کی چار سالہ قید کی خبر ملتی ہے، تو وہ لمحہ بھر کے لیے ٹوٹ جاتی ہیں لیکن فوراً ہی خود کو سنبھال لیتی ہیں تاکہ بچوں پر برا اثر نہ پڑے۔</p>
+                        <p>رقیہ بھابھی کا کردار ایک شمع کی مانند ہے جو خود جل کر دوسروں کی زندگی میں روشنی بکھیرتی ہے۔</p>
+                    </div>
+                </div>
+
+                <!-- Important Points Section -->
+                <div id="points" class="tab-content hidden">
+                    <h2 class="section-title text-3xl text-white mb-6">کہانی کے اہم نکات</h2>
+                    <div class="card rounded-lg p-6">
+                        <ul class="space-y-4 text-lg list-inside">
+                            <li class="flex items-start"><i class="fas fa-star text-yellow-400 mt-1 ml-3"></i><span><strong>مرکزی خیال:</strong> عورت کی ہمت، ایثار، اور قربانی کا لازوال مظاہرہ۔</span></li>
+                            <li class="flex items-start"><i class="fas fa-star text-yellow-400 mt-1 ml-3"></i><span><strong>رقیہ بھابھی کا کردار:</strong> وہ ایک مثالی بھابھی، بیوی، ماں، اور سماجی کارکن ہیں۔ وہ ایک شمع کی طرح ہیں جو خود جل کر دوسروں کو روشنی دیتی ہے۔</span></li>
+                            <li class="flex items-start"><i class="fas fa-star text-yellow-400 mt-1 ml-3"></i><span><strong>معاشی جدوجہد:</strong> کہانی محدود آمدنی (450 روپے ماہانہ) اور وسیع اخراجات کے درمیان جدوجہد کو ظاہر کرتی ہے۔</span></li>
+                            <li class="flex items-start"><i class="fas fa-star text-yellow-400 mt-1 ml-3"></i><span><strong>ایثار کا عروج:</strong> شمی کے بھائی کی فیس کے لیے اپنی بیٹی کی چوڑیاں دے دینا ان کی قربانی کی انتہا ہے۔</span></li>
+                            <li class="flex items-start"><i class="fas fa-star text-yellow-400 mt-1 ml-3"></i><span><strong>امید اور حوصلہ:</strong> کہانی یہ پیغام دیتی ہے کہ مشکلات چاہے کتنی ہی شدید کیوں نہ ہوں، انسان کو ہمت نہیں ہارنی چاہیے۔</span></li>
+                            <li class="flex items-start"><i class="fas fa-star text-yellow-400 mt-1 ml-3"></i><span><strong>نئے لکھنے والوں کی سرپرستی:</strong> رقیہ بھابھی کا نئے ادیبوں کو خط لکھنا ادب اور نئی نسل سے ان کی محبت کو ظاہر کرتا ہے۔</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Q&A Section -->
+                <div id="qa" class="tab-content hidden">
+                    <h2 class="section-title text-3xl text-white mb-6">اہم سوالات و جوابات</h2>
+                    <div class="space-y-4" id="accordion-container">
+                        <!-- Question 1 -->
+                        <div class="card rounded-lg overflow-hidden">
+                            <div class="accordion-header p-4 flex justify-between items-center">
+                                <h3 class="font-bold text-lg">سہیل عظیم آبادی کی پیدائش کب اور کہاں ہوئی؟</h3>
+                                <i class="fas fa-chevron-down transform transition-transform"></i>
+                            </div>
+                            <div class="accordion-content px-4">
+                                <p>سہیل عظیم آبادی کی پیدائش 1911ء میں پٹنہ میں ہوئی۔</p>
+                            </div>
+                        </div>
+                         <!-- Question 2 -->
+                        <div class="card rounded-lg overflow-hidden">
+                            <div class="accordion-header p-4 flex justify-between items-center">
+                                <h3 class="font-bold text-lg">رقیہ بھابھی کے شوہر کو بار بار جیل کیوں جانا پڑتا تھا؟</h3>
+                                <i class="fas fa-chevron-down transform transition-transform"></i>
+                            </div>
+                            <div class="accordion-content px-4">
+                                <p>رقیہ بھابھی کے شوہر کو ان کی سیاسی سرگرمیوں کی وجہ سے بار بار جیل جانا پڑتا تھا۔</p>
+                            </div>
+                        </div>
+                        <!-- Question 3 -->
+                        <div class="card rounded-lg overflow-hidden">
+                            <div class="accordion-header p-4 flex justify-between items-center">
+                                <h3 class="font-bold text-lg">رقیہ بھابھی نے سونے کی چوڑیوں کو کیوں فروخت کروایا؟</h3>
+                                <i class="fas fa-chevron-down transform transition-transform"></i>
+                            </div>
+                            <div class="accordion-content px-4">
+                                <p>رقیہ بھابھی نے اپنی ایک غریب طالبہ شمی کے بھائی کی ایم.اے کی فیس ادا کرنے کے لیے سونے کی چوڑیوں کو فروخت کروایا۔</p>
+                            </div>
+                        </div>
+                         <!-- Question 4 -->
+                         <div class="card rounded-lg overflow-hidden">
+                            <div class="accordion-header p-4 flex justify-between items-center">
+                                <h3 class="font-bold text-lg">افسانہ بھابھی جان کا مرکزی کردار کون ہے؟</h3>
+                                <i class="fas fa-chevron-down transform transition-transform"></i>
+                            </div>
+                            <div class="accordion-content px-4">
+                                <p>اس افسانے کا مرکزی کردار "رقیہ بھابھی" ہیں۔</p>
+                            </div>
+                        </div>
+                        <!-- Question 5 -->
+                        <div class="card rounded-lg overflow-hidden">
+                            <div class="accordion-header p-4 flex justify-between items-center">
+                                <h3 class="font-bold text-lg">سہیل عظیم آبادی کے کسی ایک افسانوی مجموعے کا نام بتائیے؟</h3>
+                                <i class="fas fa-chevron-down transform transition-transform"></i>
+                            </div>
+                            <div class="accordion-content px-4">
+                                <p>ان کے افسانوی مجموعوں میں سے ایک "چار چہرے" ہے۔ دوسرے مجموعے "الاؤ" اور "آدمی کے روپ" ہیں۔</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center mt-10 text-gray-500 font-poppins">
+            <p>&copy; 2025 - Best of Luck for your Exams!</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    // Deactivate all tabs and hide all content
+                    tabs.forEach(item => item.classList.remove('tab-active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+
+                    // Activate the clicked tab and show its content
+                    this.classList.add('tab-active');
+                    const targetId = this.dataset.target;
+                    document.getElementById(targetId).classList.remove('hidden');
+                });
+            });
+
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+
+                    // Close all other accordions
+                    document.querySelectorAll('.accordion-content.active').forEach(openContent => {
+                        if (openContent !== content) {
+                            openContent.classList.remove('active');
+                            openContent.previousElementSibling.querySelector('i').classList.remove('rotate-180');
+                        }
+                    });
+
+                    // Toggle current accordion
+                    content.classList.toggle('active');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
