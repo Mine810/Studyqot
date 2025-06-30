@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 10 Physics - Interactive Question Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-dark: #111827; /* bg-gray-900 */
+            --card-dark: #1f2937; /* bg-gray-800 */
+            --border-dark: #374151; /* bg-gray-700 */
+            --text-light: #e5e7eb; /* bg-gray-200 */
+            --text-muted: #9ca3af; /* bg-gray-400 */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+        }
+        .lang-hi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        .question-card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .answer-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .answer-panel.open {
+            max-height: 200px;
+            padding-top: 1rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--border-dark);
+            border-radius: 9999px;
+            height: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .feedback-correct {
+            color: #4ade80; /* green-400 */
+        }
+        .feedback-incorrect {
+            color: #f87171; /* red-400 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Header Section -->
+        <header class="mb-10">
+             <div class="flex justify-between items-start">
+                <div class="text-left">
+                    <h1 class="text-4xl md:text-5xl font-bold gradient-text" data-en="Physics Numericals" data-hi="भौतिकी संख्यात्मक प्रश्न">Physics Numericals</h1>
+                    <p class="mt-2 text-lg text-gray-400" data-en="Class 10 Interactive Question Bank" data-hi="कक्षा 10 इंटरैक्टिव प्रश्न बैंक">Class 10 Interactive Question Bank</p>
+                </div>
+                <div class="flex flex-col items-end space-y-2">
+                    <div id="live-clock" class="text-sm text-gray-400 bg-gray-800/80 px-4 py-2 rounded-full border border-gray-700 shadow-lg"></div>
+                    <div class="flex space-x-2 bg-gray-800 border border-gray-700 rounded-full p-1">
+                        <button id="lang-en" class="lang-btn px-3 py-1 text-sm font-semibold rounded-full" data-lang="en">EN</button>
+                        <button id="lang-hi" class="lang-btn px-3 py-1 text-sm font-semibold rounded-full" data-lang="hi">HI</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Progress Tracker -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-semibold text-lg" data-en="Your Progress" data-hi="आपकी प्रगति">Your Progress</h3>
+                <span id="progress-text" class="font-bold text-lg">0 / 20</span>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <main class="space-y-16">
+            <!-- Chapters will be injected here by JavaScript -->
+        </main>
+    </div>
+
+    <script>
+        const chapters = [
+            {
+                title_en: "Chapter 1: Light – Reflection & Refraction", title_hi: "अध्याय 1: प्रकाश – परावर्तन तथा अपवर्तन", color: "blue",
+                questions: [
+                    { en: "A concave mirror forms an image at 20 cm from the mirror when an object is placed at 30 cm. What is the focal length of the mirror?", hi: "एक अवतल दर्पण 30 सेमी पर रखी वस्तु का प्रतिबिंब 20 सेमी पर बनाता है। दर्पण की फोकस दूरी क्या है?", ans: "-12 cm" },
+                    { en: "An object is placed 10 cm in front of a convex mirror of focal length 15 cm. Find the image distance and nature of the image.", hi: "15 सेमी फोकस दूरी वाले उत्तल दर्पण के सामने 10 सेमी पर एक वस्तु रखी है। प्रतिबिंब की दूरी और प्रकृति ज्ञात कीजिए।", ans: "6 cm, Virtual & Erect" },
+                    { en: "A ray of light enters from air to glass (refractive index = 1.5) at an angle of 30°. Find the angle of refraction.", hi: "प्रकाश की एक किरण हवा से कांच (अपवर्तनांक = 1.5) में 30° के कोण पर प्रवेश करती है। अपवर्तन कोण ज्ञात कीजिए।", ans: "19.47°" },
+                    { en: "The refractive index of water is 1.33. Find the speed of light in water. (Speed of light in vacuum = 3 × 10⁸ m/s)", hi: "पानी का अपवर्तनांक 1.33 है। पानी में प्रकाश की गति ज्ञात कीजिए। (निर्वात में प्रकाश की गति = 3 × 10⁸ मी/से)", ans: "2.25 x 10^8 m/s" },
+                    { en: "An object is placed 12 cm from a concave mirror of focal length 8 cm. Find the position and nature of the image.", hi: "8 सेमी फोकस दूरी वाले अवतल दर्पण से 12 सेमी पर एक वस्तु रखी है। प्रतिबिंब की स्थिति और प्रकृति ज्ञात कीजिए।", ans: "-24 cm, Real & Inverted" }
+                ]
+            },
+            {
+                title_en: "Chapter 2: The Human Eye & Colourful World", title_hi: "अध्याय 2: मानव नेत्र तथा रंगबिरंगा संसार", color: "green",
+                questions: [
+                    { en: "A person can read a book at 100 cm but not at 25 cm. What power of lens is needed to correct the vision?", hi: "एक व्यक्ति 100 सेमी पर एक किताब पढ़ सकता है लेकिन 25 सेमी पर नहीं। दृष्टि को ठीक करने के लिए किस शक्ति के लेंस की आवश्यकता है?", ans: "+3 D" },
+                    { en: "The far point of a myopic person is 80 cm. What power of lens is required to correct his vision?", hi: "एक निकट दृष्टि दोष वाले व्यक्ति का दूर बिंदु 80 सेमी है। उसकी दृष्टि को ठीक करने के लिए किस शक्ति के लेंस की आवश्यकता है?", ans: "-1.25 D" },
+                    { en: "The focal length of a convex lens is 25 cm. What is its power?", hi: "एक उत्तल लेंस की फोकस दूरी 25 सेमी है। इसकी शक्ति क्या है?", ans: "+4 D" },
+                    { en: "A prism causes a deviation of 5° in a light ray. If the angle of incidence is 40° and angle of emergence is 45°, find the angle of prism.", hi: "एक प्रिज्म प्रकाश की किरण में 5° का विचलन उत्पन्न करता है। यदि आपतन कोण 40° और निर्गमन कोण 45° है, तो प्रिज्म का कोण ज्ञात कीजिए।", ans: "40°" },
+                    { en: "A ray of light travels from air (n=1) to a medium of refractive index 1.5. What is the critical angle?", hi: "प्रकाश की एक किरण हवा (n=1) से 1.5 अपवर्तनांक वाले माध्यम में जाती है। क्रांतिक कोण क्या है?", ans: "41.8°" }
+                ]
+            },
+            {
+                title_en: "Chapter 3: Electricity", title_hi: "अध्याय 3: विद्युत", color: "red",
+                questions: [
+                    { en: "A bulb draws 0.5 A current when connected to 220 V. What is its resistance?", hi: "एक बल्ब 220 V से जुड़ने पर 0.5 A धारा खींचता है। इसका प्रतिरोध क्या है?", ans: "440 Ω" },
+                    { en: "Calculate the current flowing through a 10 Ω resistor when a potential difference of 5 V is applied.", hi: "10 Ω प्रतिरोधक से बहने वाली धारा की गणना करें जब 5 V का विभवांतर लगाया जाता है।", ans: "0.5 A" },
+                    { en: "Find the equivalent resistance when three resistors of 2 Ω, 4 Ω, and 6 Ω are connected in series.", hi: "2 Ω, 4 Ω, और 6 Ω के तीन प्रतिरोधकों को श्रेणीक्रम में जोड़ने पर तुल्य प्रतिरोध ज्ञात कीजिए।", ans: "12 Ω" },
+                    { en: "Find the equivalent resistance when the same resistors (2 Ω, 4 Ω, 6 Ω) are connected in parallel.", hi: "जब समान प्रतिरोधकों (2 Ω, 4 Ω, 6 Ω) को समानांतर क्रम में जोड़ा जाता है तो तुल्य प्रतिरोध ज्ञात कीजिए।", ans: "1.09 Ω" },
+                    { en: "An electric heater is rated 1000 W, 220 V. Calculate the current drawn by the heater.", hi: "एक इलेक्ट्रिक हीटर की रेटिंग 1000 W, 220 V है। हीटर द्वारा खींची गई धारा की गणना करें।", ans: "4.54 A" },
+                    { en: "How much energy is consumed if a 60 W bulb is used for 5 hours?", hi: "यदि 60 W का बल्ब 5 घंटे तक उपयोग किया जाता है तो कितनी ऊर्जा की खपत होती है?", ans: "0.3 kWh or 1.08 x 10^6 J" },
+                    { en: "A wire of resistance 10 Ω is doubled in length. What will be the new resistance?", hi: "10 Ω प्रतिरोध के एक तार की लंबाई दोगुनी कर दी जाती है। नया प्रतिरोध क्या होगा?", ans: "40 Ω" },
+                    { en: "A current of 3 A flows through a resistor for 2 hours. How much charge passes through the resistor?", hi: "एक प्रतिरोधक से 2 घंटे के लिए 3 A की धारा बहती है। प्रतिरोधक से कितना आवेश गुजरता है?", ans: "21600 C" },
+                    { en: "A device consumes 500 J of energy in 10 seconds. Find its power.", hi: "एक उपकरण 10 सेकंड में 500 J ऊर्जा की खपत करता है। इसकी शक्ति ज्ञात कीजिए।", ans: "50 W" },
+                    { en: "A circuit has a battery of 12 V and two resistors 4 Ω and 6 Ω in series. Find the total current.", hi: "एक परिपथ में 12 V की बैटरी और श्रेणीक्रम में 4 Ω और 6 Ω के दो प्रतिरोधक हैं। कुल धारा ज्ञात कीजिए।", ans: "1.2 A" }
+                ]
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContainer = document.querySelector('main');
+            let currentLang = localStorage.getItem('physicsLang') || 'en';
+            let answeredCount = 0;
+            const totalQuestions = chapters.reduce((acc, chap) => acc + chap.questions.length, 0);
+
+            function generateHTML() {
+                mainContainer.innerHTML = '';
+                let questionCounter = 1;
+                chapters.forEach(chapter => {
+                    const section = document.createElement('section');
+                    const chapterTitle = `<h2 class="text-3xl font-bold mb-8 pb-2 border-b-2 border-${chapter.color}-500/50 text-gray-100"><span data-en="${chapter.title_en}" data-hi="${chapter.title_hi}"></span></h2>`;
+                    const questionGrid = document.createElement('div');
+                    questionGrid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
+
+                    chapter.questions.forEach(q => {
+                        const card = `
+                            <div class="question-card flex flex-col">
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <p class="font-semibold text-${chapter.color}-400" data-en="Question ${questionCounter}" data-hi="प्रश्न ${questionCounter}"></p>
+                                        <button class="copy-btn text-gray-400 hover:text-white transition-colors" title="Copy Question"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg></button>
+                                    </div>
+                                    <p class="text-xl font-bold question-text" data-en="${q.en}" data-hi="${q.hi}"></p>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="flex space-x-2 mb-3">
+                                        <input type="text" class="user-answer-input bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your answer...">
+                                        <button class="check-answer-btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg" data-en="Check" data-hi="जाँचें"></button>
+                                    </div>
+                                    <p class="feedback-text h-5 text-sm"></p>
+                                </div>
+                                <div class="answer-panel mt-2 border-t border-gray-700">
+                                    <p class="text-gray-300 font-semibold" data-en="Correct Answer: ${q.ans}" data-hi="सही उत्तर: ${q.ans}"></p>
+                                </div>
+                                <div class="mt-auto pt-4">
+                                    <button class="toggle-answer-btn bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-full w-full" data-show-en="Show Correct Answer" data-show-hi="सही उत्तर दिखाएँ" data-hide-en="Hide Correct Answer" data-hide-hi="सही उत्तर छिपाएँ"></button>
+                                </div>
+                            </div>`;
+                        questionGrid.innerHTML += card;
+                        questionCounter++;
+                    });
+                    
+                    section.innerHTML = chapterTitle;
+                    section.appendChild(questionGrid);
+                    mainContainer.appendChild(section);
+                });
+                updateLanguage(currentLang);
+                addEventListeners();
+            }
+
+            function updateLanguage(lang) {
+                currentLang = lang;
+                localStorage.setItem('physicsLang', lang);
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    el.innerHTML = el.getAttribute(`data-${lang}`);
+                    el.classList.toggle('lang-hi', lang === 'hi');
+                });
+                document.getElementById('lang-en').classList.toggle('bg-blue-600', lang === 'en');
+                document.getElementById('lang-en').classList.toggle('text-white', lang === 'en');
+                document.getElementById('lang-hi').classList.toggle('bg-blue-600', lang === 'hi');
+                document.getElementById('lang-hi').classList.toggle('text-white', lang === 'hi');
+            }
+            
+            function updateProgress() {
+                const progressText = document.getElementById('progress-text');
+                const progressBar = document.getElementById('progress-bar');
+                const percentage = (answeredCount / totalQuestions) * 100;
+                
+                progressText.textContent = `${answeredCount} / ${totalQuestions}`;
+                progressBar.style.width = `${percentage}%`;
+            }
+
+            function addEventListeners() {
+                document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => updateLanguage(btn.dataset.lang)));
+                document.querySelectorAll('.toggle-answer-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const card = e.currentTarget.closest('.question-card');
+                        const answerPanel = card.querySelector('.answer-panel');
+                        const isOpen = answerPanel.classList.toggle('open');
+                        btn.innerHTML = isOpen ? btn.dataset[`hide-${currentLang}`] : btn.dataset[`show-${currentLang}`];
+                    });
+                });
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                     btn.addEventListener('click', e => {
+                        const card = e.currentTarget.closest('.question-card');
+                        const questionText = card.querySelector('.question-text').getAttribute(`data-${currentLang}`);
+                        navigator.clipboard.writeText(questionText).then(() => {
+                            const originalIcon = btn.innerHTML;
+                            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+                            setTimeout(() => { btn.innerHTML = originalIcon; }, 2000);
+                        });
+                    });
+                });
+                document.querySelectorAll('.check-answer-btn').forEach((btn, index) => {
+                    btn.addEventListener('click', e => {
+                        const card = e.currentTarget.closest('.question-card');
+                        const input = card.querySelector('.user-answer-input');
+                        const feedback = card.querySelector('.feedback-text');
+                        const correctAnswer = chapters.flatMap(c => c.questions)[index].ans;
+                        
+                        if(input.value.trim() === '') return;
+
+                        // Simple comparison, can be made more robust
+                        if (input.value.trim().toLowerCase() === correctAnswer.toLowerCase()) {
+                            feedback.textContent = currentLang === 'en' ? 'Correct!' : 'सही!';
+                            feedback.className = 'feedback-text h-5 text-sm feedback-correct';
+                            if (!card.dataset.answered) {
+                                answeredCount++;
+                                card.dataset.answered = 'true';
+                                updateProgress();
+                            }
+                        } else {
+                            feedback.textContent = currentLang === 'en' ? 'Incorrect, try again.' : 'गलत, फिर से प्रयास करें।';
+                            feedback.className = 'feedback-text h-5 text-sm feedback-incorrect';
+                        }
+                    });
+                });
+            }
+
+            function updateClock() {
+                const clockElement = document.getElementById('live-clock');
+                if (clockElement) {
+                    const now = new Date();
+                    const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true };
+                    clockElement.textContent = now.toLocaleString('en-IN', options).replace(' ', ' IST, ');
+                }
+            }
+            
+            generateHTML();
+            updateProgress();
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+    </script>
+</body>
+</html>
+
