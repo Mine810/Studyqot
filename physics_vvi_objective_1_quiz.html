@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Board Class 10 Physics Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111827; /* bg-gray-900 */
+        }
+        .hindi { font-family: 'Noto Sans Devanagari', sans-serif; }
+        .btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+        }
+        .btn:disabled {
+            cursor: not-allowed;
+            background-color: #4b5563; /* gray-600 */
+            opacity: 0.7;
+        }
+        .option-btn.selected {
+            background-color: #4f46e5; /* indigo-600 */
+            border-color: #818cf8; /* indigo-400 */
+            color: white;
+        }
+        .chapter-checkbox:checked + label {
+            background-color: #4f46e5;
+            border-color: #818cf8;
+            color: #e0e7ff;
+        }
+        .animate-fade-in { animation: fadeIn 0.6s ease-in-out; }
+        .animate-slide-up { animation: slideUp 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; translateY(0); } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+    </style>
+</head>
+<body class="text-gray-100 flex items-center justify-center min-h-screen p-2 sm:p-4">
+
+    <div id="container" class="w-full max-w-4xl mx-auto">
+
+        <!-- Language Selection Screen -->
+        <div id="language-screen" class="text-center animate-fade-in">
+            <h1 class="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-500">Welcome / स्वागत है</h1>
+            <p class="text-lg text-gray-300 mb-8">Please select your language / कृपया अपनी भाषा चुनें</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="selectLanguage('en')" class="btn bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg">English</button>
+                <button onclick="selectLanguage('hi')" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg hindi">हिन्दी</button>
+            </div>
+        </div>
+
+        <!-- Chapter Selection Screen -->
+        <div id="chapter-screen" class="hidden animate-fade-in">
+            <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-6 rounded-2xl shadow-2xl text-center">
+                <h1 id="chapter-title" class="text-3xl sm:text-4xl font-bold mb-6 text-sky-400"></h1>
+                <div id="chapter-checkboxes-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                    <!-- Chapter checkboxes will be injected by JS -->
+                </div>
+                <div class="mt-8">
+                    <button id="chapter-continue-btn" onclick="compileAndProceed()" class="btn bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg text-lg" disabled></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Name Input Screen -->
+        <div id="name-screen" class="hidden animate-fade-in">
+             <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-8 rounded-2xl shadow-2xl text-center">
+                <h1 id="name-title" class="text-3xl sm:text-4xl font-bold mb-4"></h1>
+                <p id="name-prompt" class="text-lg text-gray-300 mb-8"></p>
+                <input type="text" id="name-input" class="bg-gray-700 border-2 border-gray-600 text-white text-lg rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full max-w-sm mx-auto p-3.5 placeholder-gray-400" placeholder="Your Name / आपका नाम">
+                <button id="start-quiz-btn" onclick="startQuiz()" class="btn mt-6 bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg"></button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden animate-fade-in">
+            <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-6 sm:p-8 rounded-2xl shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <div id="question-counter" class="text-lg font-semibold text-sky-400"></div>
+                    <div id="timer" class="text-lg font-semibold text-indigo-400 bg-gray-700 px-4 py-1 rounded-full">00:00</div>
+                </div>
+                <div class="mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text" class="text-2xl font-semibold leading-relaxed"></p>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div class="flex justify-end mt-8">
+                    <button id="next-btn" onclick="nextQuestion()" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden animate-fade-in">
+            <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-6 sm:p-8 rounded-2xl shadow-2xl text-center">
+                <h1 id="result-title" class="text-4xl font-bold text-green-400 mb-4 animate-slide-up"></h1>
+                <p id="result-name" class="text-2xl font-semibold mb-6 animate-slide-up" style="animation-delay: 0.1s;"></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-lg animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p id="score-label" class="text-gray-400 font-medium"></p>
+                        <p id="score" class="text-4xl font-bold text-sky-400"></p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p id="time-label" class="text-gray-400 font-medium"></p>
+                        <p id="time-taken" class="text-4xl font-bold text-indigo-400"></p>
+                    </div>
+                </div>
+                 <div id="telegram-status" class="text-sm text-gray-400 mb-6 h-5 animate-slide-up" style="animation-delay: 0.3s;"></div>
+                <h2 id="review-title" class="text-3xl font-bold border-t border-gray-700 pt-6 mb-6 animate-slide-up" style="animation-delay: 0.4s;"></h2>
+                <div id="review-container" class="space-y-6 text-left max-h-[50vh] overflow-y-auto p-1 sm:p-2 animate-slide-up" style="animation-delay: 0.5s;"></div>
+                 <button id="restart-btn" onclick="restartQuiz()" class="btn mt-8 bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-lg text-lg animate-slide-up" style="animation-delay: 0.6s;"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            en: {
+                chapter1: [
+                    { q: "The mirror which always forms a virtual, erect and diminished image is –", o: ["Concave mirror", "Plane mirror", "Convex mirror", "None of these"], a: 2 },
+                    { q: "The radius of curvature is equal to –", o: ["2 × focal length", "focal length", "½ focal length", "4 × focal length"], a: 0 },
+                    { q: "Unit of power of a lens is –", o: ["Dioptre", "Watt", "Meter", "Newton"], a: 0 },
+                    { q: "A real and inverted image is formed by which mirror?", o: ["Plane", "Convex", "Concave", "None"], a: 2 },
+                    { q: "Refractive index of a medium is given by –", o: ["μ = c/v", "μ = v/c", "μ = c + v", "None"], a: 0 },
+                    { q: "The image formed by a plane mirror is –", o: ["Real", "Inverted", "Virtual and erect", "Enlarged"], a: 2 },
+                    { q: "Focal length of plane mirror is –", o: ["Infinite", "Zero", "1 cm", "Cannot be found"], a: 0 },
+                    { q: "Which lens is used to correct myopia?", o: ["Convex", "Concave", "Bifocal", "Cylindrical"], a: 1 },
+                    { q: "The center of curvature lies in front of the mirror in—", o: ["Concave mirror", "Convex mirror", "Plane mirror", "None"], a: 0 },
+                    { q: "The SI unit of refractive index is—", o: ["m/s", "m²", "No unit", "radian"], a: 2 }
+                ],
+                chapter2: [
+                    { q: "The least distance of distinct vision for a normal eye is –", o: ["15 cm", "10 cm", "25 cm", "5 cm"], a: 2 },
+                    { q: "Which part of the eye controls the amount of light entering it?", o: ["Iris", "Retina", "Cornea", "Pupil"], a: 0 },
+                    { q: "The image formed on the retina is –", o: ["Real and erect", "Virtual and inverted", "Real and inverted", "Virtual and erect"], a: 2 },
+                    { q: "What is the power of normal human eye?", o: ["50 D", "60 D", "10 D", "100 D"], a: 1 },
+                    { q: "Rainbow is caused due to –", o: ["Reflection only", "Refraction only", "Dispersion, refraction and internal reflection", "Diffraction"], a: 2 },
+                    { q: "Which phenomenon causes the red color of sun at sunrise/sunset?", o: ["Dispersion", "Scattering", "Diffraction", "Polarisation"], a: 1 },
+                    { q: "Myopia is also called—", o: ["Farsightedness", "Nearsightedness", "Colour blindness", "Astigmatism"], a: 1 },
+                    { q: "Which lens is used for hypermetropia?", o: ["Convex", "Concave", "Cylindrical", "Bifocal"], a: 0 },
+                    { q: "Twinkling of stars is due to—", o: ["Reflection", "Refraction of light through atmosphere", "Rotation of earth", "Dispersion"], a: 1 },
+                    { q: "Color blindness is caused due to defect in—", o: ["Rods", "Cones", "Retina", "Lens"], a: 1 }
+                ],
+                chapter3: [
+                    { q: "SI unit of electric current is –", o: ["Volt", "Ohm", "Ampere", "Watt"], a: 2 },
+                    { q: "Formula of Ohm’s law is –", o: ["V = IR", "I = VR", "V = I/R", "R = V × I"], a: 0 },
+                    { q: "The instrument used to measure current is –", o: ["Voltmeter", "Ammeter", "Galvanometer", "Thermometer"], a: 1 },
+                    { q: "Resistance is measured in –", o: ["Ohm", "Ampere", "Volt", "Watt"], a: 0 },
+                    { q: "1 kilowatt-hour = ?", o: ["3600 J", "1000 J", "3.6 × 10⁶ J", "36000 J"], a: 2 },
+                    { q: "A fuse wire is made of—", o: ["Lead and tin", "Copper", "Aluminium", "Silver"], a: 0 },
+                    { q: "Heating effect of electric current is used in –", o: ["Fan", "Electric bulb", "Battery", "Switch"], a: 1 },
+                    { q: "What is the SI unit of potential difference?", o: ["Watt", "Joule", "Volt", "Ampere"], a: 2 },
+                    { q: "When resistance increases, current—", o: ["Increases", "Decreases", "Remains same", "Doubles"], a: 1 },
+                    { q: "What is the resistance of an ideal ammeter?", o: ["0 ohm", "Infinite", "1 ohm", "100 ohm"], a: 0 }
+                ]
+            },
+            hi: {
+                chapter1: [
+                    { q: "वह दर्पण जो हमेशा आभासी, सीधा और छोटा प्रतिबिंब बनाता है -", o: ["अवतल दर्पण", "समतल दर्पण", "उत्तल दर्पण", "इनमें से कोई नहीं"], a: 2 },
+                    { q: "वक्रता त्रिज्या बराबर होती है -", o: ["2 × फोकस दूरी", "फोकस दूरी", "½ फोकस दूरी", "4 × फोकस दूरी"], a: 0 },
+                    { q: "लेंस की क्षमता का मात्रक है -", o: ["डायोप्टर", "वाट", "मीटर", "न्यूटन"], a: 0 },
+                    { q: "वास्तविक और उल्टा प्रतिबिंब किस दर्पण द्वारा बनता है?", o: ["समतल", "उत्तल", "अवतल", "कोई नहीं"], a: 2 },
+                    { q: "किसी माध्यम का अपवर्तनांक दिया जाता है -", o: ["μ = c/v", "μ = v/c", "μ = c + v", "कोई नहीं"], a: 0 },
+                    { q: "समतल दर्पण द्वारा बना प्रतिबिंब होता है -", o: ["वास्तविक", "उल्टा", "आभासी और सीधा", "बड़ा"], a: 2 },
+                    { q: "समतल दर्पण की फोकस दूरी होती है -", o: ["अनंत", "शून्य", "1 सेमी", "ज्ञात नहीं की जा सकती"], a: 0 },
+                    { q: "निकट दृष्टि दोष (मायोपिया) को ठीक करने के लिए किस लेंस का उपयोग किया जाता है?", o: ["उत्तल", "अवतल", "द्विफोकल", "बेलनाकार"], a: 1 },
+                    { q: "वक्रता केंद्र दर्पण के सामने स्थित होता है—", o: ["अवतल दर्पण में", "उत्तल दर्पण में", "समतल दर्पण में", "किसी में नहीं"], a: 0 },
+                    { q: "अपवर्तनांक का SI मात्रक है—", o: ["m/s", "m²", "कोई मात्रक नहीं", "रेडियन"], a: 2 }
+                ],
+                chapter2: [
+                    { q: "एक सामान्य आँख के लिए सुस्पष्ट दृष्टि की न्यूनतम दूरी है -", o: ["15 सेमी", "10 सेमी", "25 सेमी", "5 सेमी"], a: 2 },
+                    { q: "आँख का कौन सा भाग उसमें प्रवेश करने वाले प्रकाश की मात्रा को नियंत्रित करता है?", o: ["आइरिस (परितारिका)", "रेटिना (दृष्टिपटल)", "कॉर्निया", "पुतली"], a: 0 },
+                    { q: "रेटिना पर बना प्रतिबिंब होता है -", o: ["वास्तविक और सीधा", "आभासी और उल्टा", "वास्तविक और उल्टा", "आभासी और सीधा"], a: 2 },
+                    { q: "सामान्य मानव आँख की शक्ति क्या है?", o: ["50 D", "60 D", "10 D", "100 D"], a: 1 },
+                    { q: "इंद्रधनुष किसके कारण बनता है -", o: ["केवल परावर्तन", "केवल अपवर्तन", "विक्षेपण, अपवर्तन और आंतरिक परावर्तन", "विवर्तन"], a: 2 },
+                    { q: "सूर्योदय/सूर्यास्त के समय सूर्य का लाल रंग किस घटना के कारण होता है?", o: ["विक्षेपण", "प्रकीर्णन", "विवर्तन", "ध्रुवीकरण"], a: 1 },
+                    { q: "निकट दृष्टि दोष (मायोपिया) को यह भी कहा जाता है—", o: ["दूरदर्शिता", "निकटदर्शिता", "वर्णांधता", "दृष्टिवैषम्य"], a: 1 },
+                    { q: "दूर दृष्टि दोष (हाइपरमेट्रोपिया) के लिए किस लेंस का उपयोग किया जाता है?", o: ["उत्तल", "अवतल", "बेलनाकार", "द्विफोकल"], a: 0 },
+                    { q: "तारों का टिमटिमाना किसके कारण होता है—", o: ["परावर्तन", "वायुमंडल के माध्यम से प्रकाश का अपवर्तन", "पृथ्वी का घूमना", "विक्षेपण"], a: 1 },
+                    { q: "वर्णांधता (कलर ब्लाइंडनेस) में दोष के कारण होता है—", o: ["शलाका (Rods)", "शंकु (Cones)", "रेटिना", "लेंस"], a: 1 }
+                ],
+                chapter3: [
+                    { q: "विद्युत धारा का SI मात्रक है -", o: ["वोल्ट", "ओम", "एम्पीयर", "वाट"], a: 2 },
+                    { q: "ओम के नियम का सूत्र है -", o: ["V = IR", "I = VR", "V = I/R", "R = V × I"], a: 0 },
+                    { q: "धारा मापने के लिए प्रयुक्त उपकरण है -", o: ["वोल्टमीटर", "एमीटर", "गैल्वेनोमीटर", "थर्मामीटर"], a: 1 },
+                    { q: "प्रतिरोध मापा जाता है -", o: ["ओम", "एम्पीयर", "वोल्ट", "वाट"], a: 0 },
+                    { q: "1 किलोवाट-घंटा = ?", o: ["3600 J", "1000 J", "3.6 × 10⁶ J", "36000 J"], a: 2 },
+                    { q: "एक फ्यूज तार बना होता है—", o: ["सीसा और टिन", "तांबा", "एल्यूमीनियम", "चांदी"], a: 0 },
+                    { q: "विद्युत धारा का तापीय प्रभाव किसमें उपयोग होता है -", o: ["पंखा", "विद्युत बल्ब", "बैटरी", "स्विच"], a: 1 },
+                    { q: "विभवांतर का SI मात्रक क्या है?", o: ["वाट", "जूल", "वोल्ट", "एम्पीयर"], a: 2 },
+                    { q: "जब प्रतिरोध बढ़ता है, तो धारा—", o: ["बढ़ती है", "घटती है", "समान रहती है", "दोगुनी हो जाती है"], a: 1 },
+                    { q: "एक आदर्श एमीटर का प्रतिरोध कितना होता है?", o: ["0 ओम", "अनंत", "1 ओम", "100 ओम"], a: 0 }
+                ]
+            }
+        };
+        
+        const uiText = {
+            en: {
+                chapterTitle: "Choose Your Chapter(s)",
+                chapterNames: {
+                    chapter1: "Light: Reflection & Refraction",
+                    chapter2: "The Human Eye & Colourful World",
+                    chapter3: "Electricity"
+                },
+                selectAll: "Select All Chapters",
+                continue: "Continue",
+                nameTitle: "Ready for the Challenge?",
+                namePrompt: "Please enter your name to begin.",
+                startQuiz: "Start Quiz",
+                questionCounter: (current, total) => `Question ${current} of ${total}`,
+                next: "Next",
+                finish: "Finish",
+                resultTitle: "Quiz Completed!",
+                scoreLabel: "Your Score",
+                timeLabel: "Time Taken",
+                reviewTitle: "Answer Review",
+                restart: "Take Another Quiz",
+                telegramSending: "Sending results to Telegram...",
+                telegramProgress: (current, total) => `Sending report part ${current} of ${total}...`,
+                telegramSuccess: "Results sent successfully!",
+                telegramFailure: "Failed to send results. Please check console."
+            },
+            hi: {
+                chapterTitle: "अपना अध्याय चुनें",
+                chapterNames: {
+                    chapter1: "प्रकाश - परावर्तन और अपवर्तन",
+                    chapter2: "मानव नेत्र तथा रंगबिरंगा संसार",
+                    chapter3: "विद्युत"
+                },
+                selectAll: "सभी अध्याय चुनें",
+                continue: "आगे बढ़ें",
+                nameTitle: "क्या आप चुनौती के लिए तैयार हैं?",
+                namePrompt: "शुरू करने के लिए कृपया अपना नाम दर्ज करें।",
+                startQuiz: "प्रश्नोत्तरी शुरू करें",
+                questionCounter: (current, total) => `प्रश्न ${current} / ${total}`,
+                next: "अगला",
+                finish: "समाप्त",
+                resultTitle: "प्रश्नोत्तरी पूरी हुई!",
+                scoreLabel: "आपका स्कोर",
+                timeLabel: "लिया गया समय",
+                reviewTitle: "उत्तर समीक्षा",
+                restart: "एक और प्रश्नोत्तरी दें",
+                telegramSending: "परिणाम टेलीग्राम पर भेजे जा रहे हैं...",
+                telegramProgress: (current, total) => `रिपोर्ट का ${current}/${total} भाग भेजा जा रहा है...`,
+                telegramSuccess: "परिणाम सफलतापूर्वक भेज दिए गए!",
+                telegramFailure: "परिणाम भेजने में विफल। कृपया कंसोल जांचें।"
+            }
+        };
+
+        // --- State Management ---
+        let currentLanguage = 'en';
+        let selectedQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let timerInterval;
+        let seconds = 0;
+        let userName = '';
+
+        // --- DOM Elements ---
+        const languageScreen = document.getElementById('language-screen');
+        const chapterScreen = document.getElementById('chapter-screen');
+        const nameScreen = document.getElementById('name-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        // --- Core Functions ---
+        function selectLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            if(lang === 'hi') document.body.classList.add('hindi');
+            else document.body.classList.remove('hindi');
+            languageScreen.classList.add('hidden');
+            showChapterSelection();
+        }
+        
+        function showChapterSelection() {
+            const texts = uiText[currentLanguage];
+            document.getElementById('chapter-title').innerText = texts.chapterTitle;
+            document.getElementById('chapter-continue-btn').innerText = texts.continue;
+            const container = document.getElementById('chapter-checkboxes-container');
+            container.innerHTML = '';
+            
+            Object.keys(texts.chapterNames).forEach(key => {
+                const div = document.createElement('div');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = key;
+                checkbox.name = 'chapter';
+                checkbox.value = key;
+                checkbox.className = 'hidden chapter-checkbox';
+                checkbox.onchange = validateChapterSelection;
+
+                const label = document.createElement('label');
+                label.htmlFor = key;
+                label.innerText = texts.chapterNames[key];
+                label.className = 'block w-full cursor-pointer rounded-lg border-2 border-gray-600 bg-gray-700/50 p-4 font-semibold text-gray-300 transition-all duration-200 hover:border-indigo-500';
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+
+            const allDiv = document.createElement('div');
+            allDiv.className = 'sm:col-span-2';
+            const allCheckbox = document.createElement('input');
+            allCheckbox.type = 'checkbox';
+            allCheckbox.id = 'all';
+            allCheckbox.className = 'hidden chapter-checkbox';
+            allCheckbox.onchange = (e) => {
+                document.querySelectorAll('input[name="chapter"]').forEach(cb => {
+                    cb.checked = e.target.checked;
+                });
+                validateChapterSelection();
+            };
+            const allLabel = document.createElement('label');
+            allLabel.htmlFor = 'all';
+            allLabel.innerText = texts.selectAll;
+            allLabel.className = 'block w-full cursor-pointer rounded-lg border-2 border-sky-600/50 bg-sky-900/30 p-4 font-semibold text-sky-300 transition-all duration-200 hover:border-sky-500';
+            allDiv.appendChild(allCheckbox);
+            allDiv.appendChild(allLabel);
+            container.appendChild(allDiv);
+
+            chapterScreen.classList.remove('hidden');
+            validateChapterSelection();
+        }
+        
+        function validateChapterSelection() {
+            const selectedCount = document.querySelectorAll('input[name="chapter"]:checked').length;
+            document.getElementById('chapter-continue-btn').disabled = selectedCount === 0;
+            
+            const allCheckbox = document.getElementById('all');
+            const totalChapters = document.querySelectorAll('input[name="chapter"]').length;
+            allCheckbox.checked = selectedCount === totalChapters;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function compileAndProceed() {
+            selectedQuestions = [];
+            const selectedCheckboxes = document.querySelectorAll('input[name="chapter"]:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const chapterKey = checkbox.value;
+                selectedQuestions.push(...quizData[currentLanguage][chapterKey]);
+            });
+
+            shuffleArray(selectedQuestions);
+            
+            chapterScreen.classList.add('hidden');
+            showNameScreen();
+        }
+
+        function showNameScreen() {
+            const texts = uiText[currentLanguage];
+            document.getElementById('name-title').innerText = texts.nameTitle;
+            document.getElementById('name-prompt').innerText = texts.namePrompt;
+            document.getElementById('start-quiz-btn').innerText = texts.startQuiz;
+            nameScreen.classList.remove('hidden');
+        }
+
+        function startQuiz() {
+            userName = document.getElementById('name-input').value.trim();
+            if (userName === "") userName = currentLanguage === 'en' ? 'Anonymous' : 'अनाम';
+            nameScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            startTimer();
+            loadQuestion();
+        }
+        
+        function restartQuiz() {
+            selectedQuestions = [];
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            seconds = 0;
+            userName = '';
+            document.getElementById('name-input').value = '';
+            resultScreen.classList.add('hidden');
+            languageScreen.classList.remove('hidden');
+        }
+
+        function startTimer() {
+            seconds = 0; 
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const currentQuestion = selectedQuestions[currentQuestionIndex];
+            const texts = uiText[currentLanguage];
+
+            document.getElementById('question-counter').innerText = texts.questionCounter(currentQuestionIndex + 1, selectedQuestions.length);
+            document.getElementById('question-text').innerHTML = currentQuestion.q;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            currentQuestion.o.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerHTML = option;
+                button.classList.add('option-btn', 'btn', 'w-full', 'text-left', 'p-4', 'rounded-lg', 'border-2', 'border-gray-600', 'bg-gray-700/50', 'hover:bg-gray-700', 'focus:outline-none', 'font-medium');
+                button.onclick = () => selectOption(index, button);
+                optionsContainer.appendChild(button);
+            });
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestionIndex === selectedQuestions.length - 1) {
+                nextBtn.innerText = texts.finish;
+            } else {
+                nextBtn.innerText = texts.next;
+            }
+            nextBtn.disabled = true;
+            nextBtn.classList.add('opacity-50');
+        }
+
+        function selectOption(selectedIndex, button) {
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.disabled = true;
+            });
+            button.classList.add('selected');
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('opacity-50');
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === selectedQuestions[currentQuestionIndex].a) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < selectedQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            clearInterval(timerInterval);
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            const texts = uiText[currentLanguage];
+            document.getElementById('result-title').innerText = texts.resultTitle;
+            document.getElementById('result-name').innerText = userName;
+            document.getElementById('score-label').innerText = texts.scoreLabel;
+            document.getElementById('score').innerText = `${score} / ${selectedQuestions.length}`;
+            document.getElementById('time-label').innerText = texts.timeLabel;
+            document.getElementById('time-taken').innerText = document.getElementById('timer').innerText;
+            document.getElementById('review-title').innerText = texts.reviewTitle;
+            document.getElementById('restart-btn').innerText = texts.restart;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+            selectedQuestions.forEach((question, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const correctAnswerIndex = question.a;
+                
+                const reviewBlock = document.createElement('div');
+                reviewBlock.className = 'bg-gray-900/70 p-4 rounded-lg';
+
+                const questionP = document.createElement('p');
+                questionP.className = 'font-semibold mb-3 text-gray-200';
+                questionP.innerHTML = `${index + 1}. ${question.q}`;
+                reviewBlock.appendChild(questionP);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-2';
+                
+                question.o.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'p-2 rounded-md text-sm font-medium flex items-center';
+                    let indicator = '';
+
+                    if (optionIndex === correctAnswerIndex) {
+                        optionDiv.classList.add('bg-green-500/20', 'text-green-300');
+                        indicator = `<span class="font-bold mr-2">[${currentLanguage === 'en' ? 'Correct' : 'सही'}]</span>`;
+                    } else if (optionIndex === userAnswerIndex) {
+                        optionDiv.classList.add('bg-red-500/20', 'text-red-300');
+                        indicator = `<span class="font-bold mr-2">[${currentLanguage === 'en' ? 'Your Answer' : 'आपका उत्तर'}]</span>`;
+                    } else {
+                         optionDiv.classList.add('bg-gray-700/50');
+                    }
+                    
+                    if (optionIndex === userAnswerIndex && optionIndex === correctAnswerIndex) {
+                        indicator = `<span class="font-bold mr-2">[${currentLanguage === 'en' ? 'Correct & Your Answer' : 'सही और आपका उत्तर'}]</span>`;
+                    }
+                    
+                    optionDiv.innerHTML = `${indicator} ${option}`;
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                reviewBlock.appendChild(optionsDiv);
+                reviewContainer.appendChild(reviewBlock);
+            });
+            
+            sendResultsToTelegram();
+        }
+        
+        // --- Telegram Integration (Robust Version) ---
+        function sanitizeForMarkdownV2(text) {
+             if (typeof text !== 'string') return '';
+             // Escape all special characters required by MarkdownV2
+             return text.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
+        }
+
+        async function sendResultsToTelegram() {
+            const telegramStatus = document.getElementById('telegram-status');
+            telegramStatus.innerText = uiText[currentLanguage].telegramSending;
+
+            const token = "7824715442:AAEeBcDZhfZw1zZx4Q5fyIvpriXX-_C6pIE";
+            const chatId = "7562968631";
+            const maxMessageLength = 4096;
+
+            // 1. Build an array of individual report lines (header + each question)
+            const reportLines = [];
+            reportLines.push(`*⚡ New Physics Quiz Result\\! ⚡*\n`);
+            reportLines.push(`*Name:* \`${sanitizeForMarkdownV2(userName)}\``);
+            reportLines.push(`*Score:* ${score} / ${selectedQuestions.length}`);
+            reportLines.push(`*Time Taken:* ${sanitizeForMarkdownV2(document.getElementById('timer').innerText)}`);
+            reportLines.push(`*Language:* ${currentLanguage.toUpperCase()}`);
+            reportLines.push(sanitizeForMarkdownV2('------------------------------------'));
+
+            selectedQuestions.forEach((q, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const correctAnswerIndex = q.a;
+                const isCorrect = userAnswerIndex === correctAnswerIndex;
+                const userAnswerText = userAnswerIndex !== undefined ? q.o[userAnswerIndex] : (currentLanguage === 'en' ? "Not Answered" : "उत्तर नहीं दिया गया");
+
+                // The leading hyphen for list items MUST be escaped in MarkdownV2
+                let questionReport = `\n*Q${index + 1}:* ${sanitizeForMarkdownV2(q.q)}\n`;
+                questionReport += `  \\- _Your Answer:_ \`${sanitizeForMarkdownV2(userAnswerText)}\` ${isCorrect ? '✅' : '❌'}\n`;
+                if (!isCorrect) {
+                    questionReport += `  \\- _Correct Answer:_ \`${sanitizeForMarkdownV2(q.o[correctAnswerIndex])}\`\n`;
+                }
+                reportLines.push(questionReport);
+            });
+
+            // 2. Create message chunks intelligently
+            const chunks = [];
+            let currentChunk = "";
+            for (const line of reportLines) {
+                // Check if adding the next line exceeds the limit
+                if (currentChunk.length + line.length + 1 > maxMessageLength) {
+                    chunks.push(currentChunk);
+                    currentChunk = "";
+                }
+                currentChunk += line + "\n";
+            }
+            // Add the last or only chunk
+            if (currentChunk) {
+                chunks.push(currentChunk);
+            }
+
+            // 3. Send chunks sequentially with await
+            try {
+                for (let i = 0; i < chunks.length; i++) {
+                    telegramStatus.innerText = uiText[currentLanguage].telegramProgress(i + 1, chunks.length);
+                    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: chunks[i],
+                            parse_mode: 'MarkdownV2'
+                        })
+                    });
+                    const result = await response.json();
+                    if (!result.ok) {
+                        // Log detailed error and stop
+                        console.error("Telegram API Error:", result);
+                        throw new Error(`[Chunk ${i+1}/${chunks.length}] ${result.description}`);
+                    }
+                }
+                telegramStatus.innerText = uiText[currentLanguage].telegramSuccess;
+                telegramStatus.style.color = '#34d399'; // green-400
+            } catch (error) {
+                console.error("Failed to send results to Telegram:", error);
+                telegramStatus.innerText = uiText[currentLanguage].telegramFailure;
+                telegramStatus.style.color = '#f87171'; // red-400
+            }
+        }
+
+    </script>
+</body>
+</html>
+
