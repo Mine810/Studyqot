@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Board Class 10 Geography Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111827; /* bg-gray-900 */
+        }
+        .hindi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+        }
+        .option-btn.selected {
+            background-color: #0e7490; /* cyan-600 */
+            border-color: #22d3ee; /* cyan-400 */
+            color: white;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom scrollbar for a better look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #059669; /* emerald-600 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981; /* emerald-500 */
+        }
+    </style>
+</head>
+<body class="text-gray-100 flex items-center justify-center min-h-screen p-2 sm:p-4">
+
+    <div id="container" class="w-full max-w-4xl mx-auto">
+
+        <!-- Language Selection Screen -->
+        <div id="language-screen" class="text-center animate-fade-in">
+            <h1 class="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-500">Welcome / स्वागत है</h1>
+            <p class="text-lg text-gray-300 mb-8">Please select your language / कृपया अपनी भाषा चुनें</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="selectLanguage('en')" class="btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg text-lg">English</button>
+                <button onclick="selectLanguage('hi')" class="btn bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-8 rounded-lg text-lg hindi">हिन्दी</button>
+            </div>
+        </div>
+        
+        <!-- Syllabus Screen -->
+        <div id="syllabus-screen" class="hidden animate-fade-in">
+             <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-6 rounded-2xl shadow-2xl text-center">
+                <h1 id="syllabus-title" class="text-3xl sm:text-4xl font-bold mb-6 text-emerald-400"></h1>
+                <div class="bg-gray-900 p-6 rounded-lg text-left max-w-2xl mx-auto">
+                    <h2 id="syllabus-subtitle" class="text-xl sm:text-2xl font-semibold mb-4 text-cyan-400"></h2>
+                    <ul id="syllabus-list" class="list-disc list-inside space-y-2 text-gray-300 grid grid-cols-1 sm:grid-cols-2 gap-x-6"></ul>
+                </div>
+                <button id="syllabus-continue-btn" onclick="showNameScreen()" class="btn mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-lg"></button>
+             </div>
+        </div>
+
+        <!-- Name Input Screen -->
+        <div id="name-screen" class="hidden animate-fade-in">
+             <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-8 rounded-2xl shadow-2xl text-center">
+                <h1 id="name-title" class="text-3xl sm:text-4xl font-bold mb-4"></h1>
+                <p id="name-prompt" class="text-lg text-gray-300 mb-8"></p>
+                <input type="text" id="name-input" class="bg-gray-700 border-2 border-gray-600 text-white text-lg rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full max-w-sm mx-auto p-3.5 placeholder-gray-400" placeholder="Your Name / आपका नाम">
+                <button id="start-quiz-btn" onclick="startQuiz()" class="btn mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg text-lg"></button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden animate-fade-in">
+            <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-6 sm:p-8 rounded-2xl shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <div id="question-counter" class="text-lg font-semibold text-emerald-400"></div>
+                    <div id="timer" class="text-lg font-semibold text-cyan-400 bg-gray-700 px-4 py-1 rounded-full">00:00</div>
+                </div>
+                <div class="mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text" class="text-2xl font-semibold leading-relaxed"></p>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div class="flex justify-end mt-8">
+                    <button id="next-btn" onclick="nextQuestion()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg text-lg"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden animate-fade-in">
+            <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-6 sm:p-8 rounded-2xl shadow-2xl text-center">
+                <h1 id="result-title" class="text-4xl font-bold text-green-400 mb-4 animate-slide-up"></h1>
+                <p id="result-name" class="text-2xl font-semibold mb-6 animate-slide-up" style="animation-delay: 0.1s;"></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-lg animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p id="score-label" class="text-gray-400 font-medium"></p>
+                        <p id="score" class="text-4xl font-bold text-emerald-400"></p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <p id="time-label" class="text-gray-400 font-medium"></p>
+                        <p id="time-taken" class="text-4xl font-bold text-cyan-400"></p>
+                    </div>
+                </div>
+                 <div id="telegram-status" class="text-sm text-gray-400 mb-6 h-5 animate-slide-up" style="animation-delay: 0.3s;"></div>
+                <h2 id="review-title" class="text-3xl font-bold border-t border-gray-700 pt-6 mb-6 animate-slide-up" style="animation-delay: 0.4s;"></h2>
+                <div id="review-container" class="space-y-6 text-left max-h-[50vh] overflow-y-auto p-1 sm:p-2 animate-slide-up" style="animation-delay: 0.5s;"></div>
+                 <button id="restart-btn" onclick="restartQuiz()" class="btn mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg text-lg animate-slide-up" style="animation-delay: 0.6s;"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            en: [
+                { q: "Which is the highest mountain peak in India?", o: ["Mount Everest", "Kanchenjunga", "Nanda Devi", "Godwin Austen"], a: 1 },
+                { q: "The Northern Plains of India are formed by which rivers?", o: ["Narmada and Tapi", "Krishna and Godavari", "Ganga, Indus and Brahmaputra", "Yamuna and Saraswati"], a: 2 },
+                { q: "The Tropic of Cancer passes through how many Indian states?", o: ["5", "6", "7", "8"], a: 3 },
+                { q: "Which is the longest river in Peninsular India?", o: ["Mahanadi", "Krishna", "Godavari", "Kaveri"], a: 2 },
+                { q: "Black soil is most suitable for the cultivation of—", o: ["Tea", "Paddy", "Cotton", "Wheat"], a: 2 },
+                { q: "Which of the following is a renewable resource?", o: ["Coal", "Petroleum", "Forest", "Natural gas"], a: 2 },
+                { q: "Which type of forest is found in Sundarbans?", o: ["Tropical deciduous", "Thorn", "Mangrove", "Evergreen"], a: 2 },
+                { q: "Which state is the largest producer of manganese in India?", o: ["Bihar", "Odisha", "Jharkhand", "Karnataka"], a: 1 },
+                { q: "Which one is an example of a ferrous mineral?", o: ["Bauxite", "Limestone", "Manganese", "Mica"], a: 2 },
+                { q: "Which sector is the backbone of Indian economy?", o: ["Industrial", "Agricultural", "Service", "Transport"], a: 1 },
+                { q: "Which crop is known as 'Golden Fibre'?", o: ["Cotton", "Jute", "Silk", "Wool"], a: 1 },
+                { q: "Which one of the following is the largest producer of salt in India?", o: ["Gujarat", "Tamil Nadu", "Rajasthan", "Andhra Pradesh"], a: 0 },
+                { q: "Which port is a tidal port in India?", o: ["Chennai", "Kolkata", "Mumbai", "Vishakhapatnam"], a: 1 },
+                { q: "Which of the following is the oldest mountain range in India?", o: ["Himalayas", "Aravallis", "Western Ghats", "Vindhyas"], a: 1 },
+                { q: "Which place in India receives the highest rainfall?", o: ["Mawsynram", "Cherrapunji", "Agartala", "Itanagar"], a: 0 },
+                { q: "Red soil is rich in—", o: ["Iron", "Nitrogen", "Humus", "Zinc"], a: 0 },
+                { q: "Which river is known as ‘Dakshin Ganga’?", o: ["Krishna", "Godavari", "Mahanadi", "Kaveri"], a: 1 },
+                { q: "Which state is the largest producer of coffee?", o: ["Tamil Nadu", "Assam", "Karnataka", "Kerala"], a: 2 },
+                { q: "The major iron ore producing state in India is—", o: ["Bihar", "Odisha", "Maharashtra", "Punjab"], a: 1 },
+                { q: "Which industry uses limestone as a raw material?", o: ["Steel", "Cement", "Textile", "Paper"], a: 1 },
+                { q: "Which transport is most suitable for long-distance and bulk goods?", o: ["Roadways", "Railways", "Airways", "Waterways"], a: 1 },
+                { q: "What is the full form of NH in transport?", o: ["National Hill", "National Heritage", "National Highway", "National Hub"], a: 2 },
+                { q: "Which mineral is used in the nuclear power generation?", o: ["Mica", "Uranium", "Coal", "Iron"], a: 1 },
+                { q: "The Western coastal plain is divided into how many parts?", o: ["3", "2", "4", "5"], a: 0 },
+                { q: "Which gas is mainly responsible for global warming?", o: ["Oxygen", "Hydrogen", "Carbon dioxide", "Nitrogen"], a: 2 },
+                { q: "Which crop requires maximum water?", o: ["Wheat", "Bajra", "Paddy", "Maize"], a: 2 },
+                { q: "Which state has the highest road density?", o: ["Bihar", "Kerala", "Punjab", "Maharashtra"], a: 1 },
+                { q: "The Sundarbans delta is formed by—", o: ["Ganga and Yamuna", "Ganga and Brahmaputra", "Godavari and Krishna", "Indus and Satluj"], a: 1 },
+                { q: "Which of the following is a Kharif crop?", o: ["Wheat", "Gram", "Maize", "Mustard"], a: 2 },
+                { q: "Bihar is rich in which mineral?", o: ["Bauxite", "Coal", "Mica", "Petroleum"], a: 2 }
+            ],
+            hi: [
+                { q: "भारत की सबसे ऊँची पर्वत चोटी कौन सी है?", o: ["माउंट एवरेस्ट", "कंचनजंगा", "नंदा देवी", "गॉडविन ऑस्टेन"], a: 1 },
+                { q: "भारत के उत्तरी मैदान किन नदियों से बने हैं?", o: ["नर्मदा और तापी", "कृष्णा और गोदावरी", "गंगा, सिंधु और ब्रह्मपुत्र", "यमुना और सरस्वती"], a: 2 },
+                { q: "कर्क रेखा भारत के कितने राज्यों से होकर गुजरती है?", o: ["5", "6", "7", "8"], a: 3 },
+                { q: "प्रायद्वीपीय भारत की सबसे लंबी नदी कौन सी है?", o: ["महानदी", "कृष्णा", "गोदावरी", "कावेरी"], a: 2 },
+                { q: "काली मिट्टी किसकी खेती के लिए सर्वाधिक उपयुक्त है?", o: ["चाय", "धान", "कपास", "गेहूँ"], a: 2 },
+                { q: "निम्नलिखित में से कौन एक नवीकरणीय संसाधन है?", o: ["कोयला", "पेट्रोलियम", "वन", "प्राकृतिक गैस"], a: 2 },
+                { q: "सुंदरवन में किस प्रकार के वन पाए जाते हैं?", o: ["उष्णकटिबंधीय पर्णपाती", "कांटेदार", "मैंग्रोव", "सदाबहार"], a: 2 },
+                { q: "भारत में मैंगनीज का सबसे बड़ा उत्पादक राज्य कौन सा है?", o: ["बिहार", "ओडिशा", "झारखंड", "कर्नाटक"], a: 1 },
+                { q: "लौह खनिज का उदाहरण कौन सा है?", o: ["बॉक्साइट", "चूना पत्थर", "मैंगनीज", "अभ्रक"], a: 2 },
+                { q: "कौन सा क्षेत्र भारतीय अर्थव्यवस्था की रीढ़ है?", o: ["औद्योगिक", "कृषि", "सेवा", "परिवहन"], a: 1 },
+                { q: "किस फसल को 'सुनहरा रेशा' कहा जाता है?", o: ["कपास", "जूट", "रेशम", "ऊन"], a: 1 },
+                { q: "निम्नलिखित में से कौन भारत में नमक का सबसे बड़ा उत्पादक है?", o: ["गुजरात", "तमिलनाडु", "राजस्थान", "आंध्र प्रदेश"], a: 0 },
+                { q: "भारत में कौन सा बंदरगाह एक ज्वारीय बंदरगाह है?", o: ["चेन्नई", "कोलकाता", "मुंबई", "विशाखापत्तनम"], a: 1 },
+                { q: "निम्नलिखित में से कौन भारत की सबसे पुरानी पर्वत श्रृंखला है?", o: ["हिमालय", "अरावली", "पश्चिमी घाट", "विंध्य"], a: 1 },
+                { q: "भारत में किस स्थान पर सर्वाधिक वर्षा होती है?", o: ["मासिनराम", "चेरापूंजी", "अगरतला", "ईटानगर"], a: 0 },
+                { q: "लाल मिट्टी में किसकी प्रचुरता होती है?", o: ["लोहा", "नाइट्रोजन", "ह्यूमस", "जिंक"], a: 0 },
+                { q: "किस नदी को 'दक्षिण गंगा' के नाम से जाना जाता है?", o: ["कृष्णा", "गोदावरी", "महानदी", "कावेरी"], a: 1 },
+                { q: "कॉफी का सबसे बड़ा उत्पादक राज्य कौन सा है?", o: ["तमिलनाडु", "असम", "कर्नाटक", "केरल"], a: 2 },
+                { q: "भारत में प्रमुख लौह अयस्क उत्पादक राज्य है—", o: ["बिहार", "ओडिशा", "महाराष्ट्र", "पंजाब"], a: 1 },
+                { q: "कौन सा उद्योग कच्चे माल के रूप में चूना पत्थर का उपयोग करता है?", o: ["स्टील", "सीमेंट", "कपड़ा", "कागज"], a: 1 },
+                { q: "लंबी दूरी और भारी माल के लिए कौन सा परिवहन सबसे उपयुक्त है?", o: ["सड़क मार्ग", "रेलवे", "वायुमार्ग", "जलमार्ग"], a: 1 },
+                { q: "परिवहन में NH का पूर्ण रूप क्या है?", o: ["नेशनल हिल", "नेशनल हेरिटेज", "नेशनल हाईवे", "नेशनल हब"], a: 2 },
+                { q: "परमाणु ऊर्जा उत्पादन में किस खनिज का उपयोग किया जाता है?", o: ["अभ्रक", "यूरेनियम", "कोयला", "लोहा"], a: 1 },
+                { q: "पश्चिमी तटीय मैदान कितने भागों में विभाजित है?", o: ["3", "2", "4", "5"], a: 0 },
+                { q: "ग्लोबल वार्मिंग के लिए मुख्य रूप से कौन सी गैस जिम्मेदार है?", o: ["ऑक्सीजन", "हाइड्रोजन", "कार्बन डाइऑक्साइड", "नाइट्रोजन"], a: 2 },
+                { q: "किस फसल को अधिकतम पानी की आवश्यकता होती है?", o: ["गेहूँ", "बाजरा", "धान", "मक्का"], a: 2 },
+                { q: "किस राज्य में सड़क घनत्व सबसे अधिक है?", o: ["बिहार", "केरल", "पंजाब", "महाराष्ट्र"], a: 1 },
+                { q: "सुंदरवन डेल्टा का निर्माण होता है—", o: ["गंगा और यमुना", "गंगा और ब्रह्मपुत्र", "गोदावरी और कृष्णा", "सिंधु और सतलुज"], a: 1 },
+                { q: "निम्नलिखित में से कौन सी एक खरीफ फसल है?", o: ["गेहूँ", "चना", "मक्का", "सरसों"], a: 2 },
+                { q: "बिहार किस खनिज में समृद्ध है?", o: ["बॉक्साइट", "कोयला", "अभ्रक", "पेट्रोलियम"], a: 2 }
+            ]
+        };
+        
+        const uiText = {
+            en: {
+                syllabusTitle: "Bihar Board Class 10 Geography",
+                syllabusSubtitle: "Key Topics for Exam 2026",
+                syllabusPoints: ["India: Resources & Use", "Agriculture", "Forest & Wildlife", "Manufacturing Industries", "Minerals & Energy", "Lifelines of Economy", "Water Resources", "Disaster Management"],
+                continue: "Continue",
+                nameTitle: "Ready for the Challenge?",
+                namePrompt: "Please enter your name to begin.",
+                startQuiz: "Start Quiz",
+                questionCounter: (current, total) => `Question ${current} of ${total}`,
+                next: "Next",
+                finish: "Finish",
+                resultTitle: "Quiz Completed!",
+                scoreLabel: "Your Score",
+                timeLabel: "Time Taken",
+                reviewTitle: "Answer Review",
+                restart: "Take Quiz Again",
+                telegramSending: "Sending results to Telegram...",
+                telegramSuccess: "Results sent successfully!",
+                telegramFailure: "Failed to send results to Telegram."
+            },
+            hi: {
+                syllabusTitle: "बिहार बोर्ड कक्षा 10 भूगोल",
+                syllabusSubtitle: "परीक्षा 2026 के लिए मुख्य विषय",
+                syllabusPoints: ["भारत: संसाधन और उपयोग", "कृषि", "वन और वन्यजीव", "विनिर्माण उद्योग", "खनिज और ऊर्जा", "अर्थव्यवस्था की जीवन रेखाएँ", "जल संसाधन", "आपदा प्रबंधन"],
+                continue: "आगे बढ़ें",
+                nameTitle: "क्या आप चुनौती के लिए तैयार हैं?",
+                namePrompt: "शुरू करने के लिए कृपया अपना नाम दर्ज करें।",
+                startQuiz: "प्रश्नोत्तरी शुरू करें",
+                questionCounter: (current, total) => `प्रश्न ${current} / ${total}`,
+                next: "अगला",
+                finish: "समाप्त",
+                resultTitle: "प्रश्नोत्तरी पूरी हुई!",
+                scoreLabel: "आपका स्कोर",
+                timeLabel: "लिया गया समय",
+                reviewTitle: "उत्तर समीक्षा",
+                restart: "फिर से प्रश्नोत्तरी दें",
+                telegramSending: "परिणाम टेलीग्राम पर भेजे जा रहे हैं...",
+                telegramSuccess: "परिणाम सफलतापूर्वक भेज दिए गए!",
+                telegramFailure: "टेलीग्राम पर परिणाम भेजने में विफल।"
+            }
+        };
+
+        let currentLanguage = 'en';
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let timerInterval;
+        let seconds = 0;
+        let userName = '';
+
+        const languageScreen = document.getElementById('language-screen');
+        const syllabusScreen = document.getElementById('syllabus-screen');
+        const nameScreen = document.getElementById('name-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        function selectLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            if(lang === 'hi') document.body.classList.add('hindi');
+            else document.body.classList.remove('hindi');
+            languageScreen.classList.add('hidden');
+            showSyllabus();
+        }
+        
+        function showSyllabus() {
+            const texts = uiText[currentLanguage];
+            document.getElementById('syllabus-title').innerText = texts.syllabusTitle;
+            document.getElementById('syllabus-subtitle').innerText = texts.syllabusSubtitle;
+            const list = document.getElementById('syllabus-list');
+            list.innerHTML = '';
+            texts.syllabusPoints.forEach(point => {
+                const li = document.createElement('li');
+                li.innerText = point;
+                list.appendChild(li);
+            });
+            document.getElementById('syllabus-continue-btn').innerText = texts.continue;
+            syllabusScreen.classList.remove('hidden');
+        }
+
+        function showNameScreen() {
+            const texts = uiText[currentLanguage];
+            document.getElementById('name-title').innerText = texts.nameTitle;
+            document.getElementById('name-prompt').innerText = texts.namePrompt;
+            document.getElementById('start-quiz-btn').innerText = texts.startQuiz;
+            syllabusScreen.classList.add('hidden');
+            nameScreen.classList.remove('hidden');
+        }
+
+        function startQuiz() {
+            userName = document.getElementById('name-input').value.trim();
+            if (userName === "") {
+                userName = currentLanguage === 'en' ? 'Anonymous' : 'अनाम';
+            }
+            nameScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            startTimer();
+            loadQuestion();
+        }
+        
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            seconds = 0;
+            userName = '';
+            document.getElementById('name-input').value = '';
+            resultScreen.classList.add('hidden');
+            languageScreen.classList.remove('hidden');
+        }
+
+        function startTimer() {
+            seconds = 0; 
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const questions = quizData[currentLanguage];
+            const currentQuestion = questions[currentQuestionIndex];
+            const texts = uiText[currentLanguage];
+
+            document.getElementById('question-counter').innerText = texts.questionCounter(currentQuestionIndex + 1, questions.length);
+            document.getElementById('question-text').innerText = currentQuestion.q;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            currentQuestion.o.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerHTML = option;
+                button.classList.add('option-btn', 'btn', 'w-full', 'text-left', 'p-4', 'rounded-lg', 'border-2', 'border-gray-600', 'bg-gray-700/50', 'hover:bg-gray-700', 'focus:outline-none', 'font-medium');
+                button.onclick = () => selectOption(index, button);
+                optionsContainer.appendChild(button);
+            });
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.innerText = texts.finish;
+            } else {
+                nextBtn.innerText = texts.next;
+            }
+            nextBtn.disabled = true;
+            nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        function selectOption(selectedIndex, button) {
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.disabled = true;
+            });
+            button.classList.add('selected');
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function nextQuestion() {
+            const questions = quizData[currentLanguage];
+            if (userAnswers[currentQuestionIndex] === questions[currentQuestionIndex].a) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            clearInterval(timerInterval);
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            const texts = uiText[currentLanguage];
+            document.getElementById('result-title').innerText = texts.resultTitle;
+            document.getElementById('result-name').innerText = userName;
+            document.getElementById('score-label').innerText = texts.scoreLabel;
+            document.getElementById('score').innerText = `${score} / ${quizData[currentLanguage].length}`;
+            document.getElementById('time-label').innerText = texts.timeLabel;
+            document.getElementById('time-taken').innerText = document.getElementById('timer').innerText;
+            document.getElementById('review-title').innerText = texts.reviewTitle;
+            document.getElementById('restart-btn').innerText = texts.restart;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+            quizData[currentLanguage].forEach((question, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const correctAnswerIndex = question.a;
+                
+                const reviewBlock = document.createElement('div');
+                reviewBlock.className = 'bg-gray-900/70 p-4 rounded-lg';
+
+                const questionP = document.createElement('p');
+                questionP.className = 'font-semibold mb-3 text-gray-200';
+                questionP.innerText = `${index + 1}. ${question.q}`;
+                reviewBlock.appendChild(questionP);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-2';
+                
+                question.o.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'p-2 rounded-md text-sm font-medium flex items-center';
+                    let indicator = '';
+
+                    if (optionIndex === correctAnswerIndex) {
+                        // This is the correct answer
+                        optionDiv.classList.add('bg-green-500/20', 'text-green-300');
+                        indicator = `<span class="font-bold mr-2">[${currentLanguage === 'en' ? 'Correct' : 'सही'}]</span>`;
+                    } else if (optionIndex === userAnswerIndex) {
+                        // This is the user's incorrect answer
+                        optionDiv.classList.add('bg-red-500/20', 'text-red-300');
+                        indicator = `<span class="font-bold mr-2">[${currentLanguage === 'en' ? 'Your Answer' : 'आपका उत्तर'}]</span>`;
+                    } else {
+                        // This is a neutral option
+                         optionDiv.classList.add('bg-gray-700/50');
+                    }
+                    
+                    if (optionIndex === userAnswerIndex && optionIndex !== correctAnswerIndex) {
+                        // User answered, but incorrectly
+                        // The style is already red from the block above.
+                    } else if (optionIndex === userAnswerIndex && optionIndex === correctAnswerIndex) {
+                        // User answered correctly
+                        indicator = `<span class="font-bold mr-2">[${currentLanguage === 'en' ? 'Correct & Your Answer' : 'सही और आपका उत्तर'}]</span>`;
+                    }
+                    
+                    optionDiv.innerHTML = `${indicator} ${option}`;
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                reviewBlock.appendChild(optionsDiv);
+                reviewContainer.appendChild(reviewBlock);
+            });
+            
+            sendResultsToTelegram();
+        }
+        
+        async function sendResultsToTelegram() {
+            const telegramStatus = document.getElementById('telegram-status');
+            telegramStatus.innerText = uiText[currentLanguage].telegramSending;
+
+            const token = "7824715442:AAEeBcDZhfZw1zZx4Q5fyIvpriXX-_C6pIE";
+            const chatId = "7562968631";
+            const maxMessageLength = 4096;
+
+            let fullReport = `*🗺️ New Geography Quiz Result! 🗺️*\n\n`;
+            fullReport += `*Name:* \`${userName}\`\n`;
+            fullReport += `*Score:* ${score} / ${quizData[currentLanguage].length}\n`;
+            fullReport += `*Time Taken:* ${document.getElementById('timer').innerText}\n`;
+            fullReport += `*Language:* ${currentLanguage.toUpperCase()}\n`;
+            fullReport += `------------------------------------\n\n`;
+            
+            quizData[currentLanguage].forEach((q, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const correctAnswerIndex = q.a;
+                const isCorrect = userAnswerIndex === correctAnswerIndex;
+                const userAnswerText = userAnswerIndex !== undefined ? q.o[userAnswerIndex] : (currentLanguage === 'en' ? "Not Answered" : "उत्तर नहीं दिया गया");
+
+                fullReport += `*Q${index + 1}:* ${q.q}\n`;
+                fullReport += `  - _Your Answer:_ \`${userAnswerText}\` ${isCorrect ? '✅' : '❌'}\n`;
+                if (!isCorrect) {
+                    fullReport += `  - _Correct Answer:_ \`${q.o[correctAnswerIndex]}\`\n`;
+                }
+                fullReport += `\n`;
+            });
+
+            const chunks = [];
+            for (let i = 0; i < fullReport.length; i += maxMessageLength) {
+                chunks.push(fullReport.substring(i, i + maxMessageLength));
+            }
+
+            try {
+                for (const chunk of chunks) {
+                    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: chunk,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+                    const result = await response.json();
+                    if (!result.ok) {
+                        throw new Error(result.description);
+                    }
+                }
+                telegramStatus.innerText = uiText[currentLanguage].telegramSuccess;
+                telegramStatus.style.color = '#34d399'; // green-400
+            } catch (error) {
+                console.error("Failed to send results to Telegram:", error);
+                telegramStatus.innerText = uiText[currentLanguage].telegramFailure;
+                telegramStatus.style.color = '#f87171'; // red-400
+            }
+        }
+    </script>
+</body>
+</html>
+
