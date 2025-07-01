@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 10 Bihar Board Maths Quiz - 2026 Exam Prep</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Tailwind gray-900 */
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #result-details::-webkit-scrollbar { width: 8px; }
+        #result-details::-webkit-scrollbar-track { background: #374151; border-radius: 10px; }
+        #result-details::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        #result-details::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+    </style>
+</head>
+<body class="text-gray-200 flex items-center justify-center min-h-screen p-4 bg-gray-900">
+
+    <div class="w-full max-w-3xl mx-auto">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl fade-in">
+            <div class="text-center">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-indigo-400">Class 10 Maths Quiz</h1>
+                <p class="text-lg text-gray-400 mt-2">Bihar Board - 2026 Exam Preparation</p>
+            </div>
+            
+            <div class="my-6 text-center">
+                <p class="mb-3 text-gray-300">Choose your language / अपनी भाषा चुनें</p>
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button type="button" onclick="setLanguage('en')" class="lang-btn bg-indigo-600 text-white px-6 py-2.5 text-sm font-medium rounded-l-lg border border-indigo-500 hover:bg-indigo-700 focus:z-10 focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
+                        English
+                    </button>
+                    <button type="button" onclick="setLanguage('hi')" class="lang-btn bg-gray-700 text-white px-6 py-2.5 text-sm font-medium rounded-r-lg border border-gray-600 hover:bg-gray-600 focus:z-10 focus:ring-2 focus:ring-indigo-500 transition-all duration-300">
+                        हिंदी
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area (Syllabus + Name Input) -->
+            <div id="content-area">
+                <!-- Content will be injected by JS -->
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="hidden bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <div id="question-count" class="text-sm font-medium text-indigo-400"></div>
+                <div id="timer" class="text-sm font-semibold bg-gray-700 text-white px-3 py-1 rounded-full">00:00</div>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="bg-indigo-500 h-2.5 rounded-full transition-all duration-500 ease-out"></div>
+            </div>
+            <div id="question-container" class="mb-6">
+                <p id="question-text" class="text-xl sm:text-2xl font-semibold leading-relaxed text-white"></p>
+            </div>
+            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" onclick="prevQuestion()" class="text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-800 font-medium rounded-lg text-sm px-8 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"></button>
+                <button id="next-btn" onclick="nextQuestion()" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-800 font-medium rounded-lg text-sm px-8 py-2.5 text-center transition-all duration-300"></button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-container" class="hidden bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl fade-in text-center">
+            <h1 id="result-title" class="text-2xl sm:text-3xl font-bold text-indigo-400"></h1>
+            <p id="result-name" class="text-xl mt-2 text-white font-bold"></p>
+            <div class="my-6 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                <div>
+                    <p id="score-label" class="text-gray-400"></p>
+                    <p id="result-score" class="text-5xl sm:text-6xl font-extrabold text-white my-1"></p>
+                </div>
+                <div>
+                    <p id="time-label" class="text-gray-400"></p>
+                    <p id="result-time" class="text-3xl font-bold text-white my-1"></p>
+                </div>
+            </div>
+            <div class="bg-gray-900/50 p-4 rounded-lg">
+                <h3 id="details-title" class="text-lg font-semibold mb-3 text-indigo-400"></h3>
+                <div id="result-details" class="max-h-80 overflow-y-auto space-y-4 text-left pr-2">
+                    <!-- Detailed results will be injected here -->
+                </div>
+            </div>
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onclick="restartQuiz()" class="w-full text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-800 font-bold rounded-lg text-base px-5 py-3 text-center transition-transform transform hover:scale-105 duration-300" id="restart-btn"></button>
+                <button onclick="sendToTelegram()" class="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-800 font-bold rounded-lg text-base px-5 py-3 text-center transition-transform transform hover:scale-105 duration-300 flex items-center justify-center gap-2" id="telegram-btn">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 2L11 13L2 9L22 2ZM22 2L15 22L11 13L2 9L22 2Z" /></svg>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal for Notifications -->
+    <div id="custom-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl p-6 text-center w-full max-w-sm fade-in">
+            <p id="modal-text" class="text-lg text-white mb-6"></p>
+            <button onclick="closeModal()" class="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-800 font-bold rounded-lg text-base px-5 py-2.5 text-center transition-all duration-300" id="modal-ok-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // --- QUIZ DATA & UI TEXT ---
+        const quizData = {
+            en: {
+                questions: [
+                    { question: "What is the HCF of 60 and 72?", options: ["6", "12", "18", "24"], answer: "12" },
+                    { question: "The decimal expansion of 7/8 is:", options: ["Terminating", "Non-terminating repeating", "Non-terminating non-repeating", "Integer"], answer: "Terminating" },
+                    { question: "If α and β are the zeroes of the polynomial x² + 5x + 6, then α + β = ?", options: ["-6", "-5", "5", "6"], answer: "-5" },
+                    { question: "The number of zeroes of the polynomial f(x) = x⁴ – 4x³ + 2x – 8 is:", options: ["4", "3", "2", "Cannot say"], answer: "4" },
+                    { question: "The pair of equations x + y = 5 and 2x + 2y = 10 has:", options: ["One solution", "No solution", "Infinitely many solutions", "Two solutions"], answer: "Infinitely many solutions" },
+                    { question: "The graph of a pair of linear equations is parallel. What does this mean?", options: ["Unique solution", "No solution", "Infinite solutions", "None"], answer: "No solution" },
+                    { question: "The roots of the equation x² - 5x + 6 = 0 are:", options: ["2, 3", "-2, -3", "1, 6", "0, 5"], answer: "2, 3" },
+                    { question: "If D < 0, then the quadratic equation has:", options: ["Two real roots", "No real roots", "Two equal roots", "One real root"], answer: "No real roots" },
+                    { question: "The 10th term of AP: 2, 4, 6, 8,... is:", options: ["20", "18", "22", "10"], answer: "20" },
+                    { question: "The sum of first 5 terms of AP: 3, 6, 9,... is:", options: ["30", "45", "60", "75"], answer: "45" },
+                    { question: "The distance between points A(3, 4) and B(0, 0) is:", options: ["4", "3", "5", "6"], answer: "5" },
+                    { question: "Midpoint of the line joining (2, -3) and (4, 1) is:", options: ["(3, -1)", "(6, -2)", "(1, 2)", "(-1, 3)"], answer: "(3, -1)" },
+                    { question: "If two triangles are similar, their corresponding sides are:", options: ["Equal", "Proportional", "Unequal", "Parallel"], answer: "Proportional" },
+                    { question: "In a right triangle, if one angle is 60°, the other non-right angle is:", options: ["30°", "90°", "45°", "60°"], answer: "30°" },
+                    { question: "sin 30° = ?", options: ["√3/2", "1", "1/2", "0"], answer: "1/2" },
+                    { question: "If tan A = √3, then A = ?", options: ["30°", "45°", "60°", "90°"], answer: "60°" },
+                    { question: "sec²A – tan²A = ?", options: ["1", "0", "-1", "2"], answer: "1" },
+                    { question: "The angle of elevation from a point on the ground to the top of a tower is 45°. If the height of the tower is 10 m, the distance of the point from the tower is:", options: ["10 m", "20 m", "5 m", "15 m"], answer: "10 m" },
+                    { question: "The length of tangent drawn from an external point to a circle is:", options: ["Less than radius", "Equal to radius", "Greater than radius", "Perpendicular to radius"], answer: "Greater than radius" },
+                    { question: "A tangent to a circle is always ___ to the radius.", options: ["Parallel", "Equal", "Perpendicular", "Tangent"], answer: "Perpendicular" },
+                    { question: "To divide a line segment AB in the ratio 3:2, the number of arcs to be drawn is:", options: ["2", "3", "5", "6"], answer: "5" },
+                    { question: "Area of a circle with radius 7 cm is:", options: ["154 cm²", "44 cm²", "22 cm²", "143 cm²"], answer: "154 cm²" },
+                    { question: "Circumference of circle with diameter 14 cm is:", options: ["44 cm", "88 cm", "22 cm", "154 cm"], answer: "44 cm" },
+                    { question: "Volume of a cube of side 4 cm is:", options: ["16 cm³", "64 cm³", "32 cm³", "48 cm³"], answer: "64 cm³" },
+                    { question: "Surface area of sphere with radius 7 cm is:", options: ["616 cm²", "154 cm²", "308 cm²", "484 cm²"], answer: "616 cm²" },
+                    { question: "The mean of 5, 10, 15, 20, 25 is:", options: ["10", "15", "20", "25"], answer: "15" },
+                    { question: "The mode of 2, 2, 3, 4, 5, 2, 6 is:", options: ["2", "3", "4", "5"], answer: "2" },
+                    { question: "Probability of getting head in a coin toss is:", options: ["0", "1", "1/2", "2"], answer: "1/2" },
+                    { question: "A die is thrown once. What is the probability of getting a number greater than 4?", options: ["1/6", "2/6", "3/6", "4/6"], answer: "2/6" },
+                    { question: "Probability of choosing a vowel from English alphabets is:", options: ["5/26", "6/26", "21/26", "1/2"], answer: "5/26" }
+                ],
+                syllabusTitle: "Syllabus Covered:",
+                syllabus: `<li><strong>Real Numbers:</strong> HCF, LCM, Decimal Expansions</li><li><strong>Polynomials:</strong> Zeroes, Division Algorithm</li><li><strong>Linear Equations:</strong> Graphical & Algebraic Methods</li><li><strong>Quadratic Equations:</strong> Factorization, Formula</li><li><strong>Arithmetic Progressions:</strong> nth Term, Sum</li><li><strong>Coordinate Geometry:</strong> Distance & Section Formula</li><li><strong>Triangles:</strong> Similarity, Pythagoras Theorem</li><li><strong>Trigonometry:</strong> Ratios, Identities, Heights & Distances</li><li><strong>Circles:</strong> Tangents, Theorems</li><li><strong>Constructions:</strong> Division of Line, Tangents</li><li><strong>Areas Related to Circles:</strong> Perimeter, Area, Sectors</li><li><strong>Surface Area & Volume:</strong> Cube, Sphere, Cylinder</li><li><strong>Statistics:</strong> Mean, Median, Mode</li><li><strong>Probability:</strong> Theoretical Probability</li>`,
+                nameLabel: "Enter your name",
+                namePlaceholder: "e.g., Kumar Ravi",
+                startBtn: "Start Quiz",
+                prevBtn: "Previous",
+                nextBtn: "Next",
+                finishBtn: "Finish",
+                questionCount: (c, t) => `Question ${c} of ${t}`,
+                resultTitle: "Quiz Complete!",
+                scoreLabel: "Your Score",
+                timeLabel: "Time Taken",
+                detailsTitle: "Review Your Answers",
+                yourAnswer: "Your Answer",
+                correctAnswer: "Correct Answer",
+                notAttempted: "Not Attempted",
+                restartBtn: "Restart Quiz",
+                telegramBtn: "Send to Telegram",
+                nameError: "Please enter your name to start.",
+                optionError: "Please select an option to continue.",
+                modalOkBtn: "OK"
+            },
+            hi: {
+                questions: [
+                    { question: "60 और 72 का महत्तम समापवर्तक (HCF) क्या है?", options: ["6", "12", "18", "24"], answer: "12" },
+                    { question: "7/8 का दशमलव प्रसार है:", options: ["सांत", "असांत आवर्ती", "असांत अनावर्ती", "पूर्णांक"], answer: "सांत" },
+                    { question: "यदि α और β बहुपद x² + 5x + 6 के शून्यक हैं, तो α + β = ?", options: ["-6", "-5", "5", "6"], answer: "-5" },
+                    { question: "बहुपद f(x) = x⁴ – 4x³ + 2x – 8 के शून्यकों की संख्या है:", options: ["4", "3", "2", "कह नहीं सकते"], answer: "4" },
+                    { question: "समीकरण युग्म x + y = 5 और 2x + 2y = 10 के हैं:", options: ["एक हल", "कोई हल नहीं", "अनंत हल", "दो हल"], answer: "अनंत हल" },
+                    { question: "दो रैखिक समीकरणों का ग्राफ समानांतर है। इसका क्या अर्थ है?", options: ["अद्वितीय हल", "कोई हल नहीं", "अनंत हल", "कोई नहीं"], answer: "कोई हल नहीं" },
+                    { question: "समीकरण x² - 5x + 6 = 0 के मूल हैं:", options: ["2, 3", "-2, -3", "1, 6", "0, 5"], answer: "2, 3" },
+                    { question: "यदि D < 0, तो द्विघात समीकरण के:", options: ["दो वास्तविक मूल", "कोई वास्तविक मूल नहीं", "दो समान मूल", "एक वास्तविक मूल"], answer: "कोई वास्तविक मूल नहीं" },
+                    { question: "समांतर श्रेणी: 2, 4, 6, 8,... का 10वाँ पद है:", options: ["20", "18", "22", "10"], answer: "20" },
+                    { question: "समांतर श्रेणी: 3, 6, 9,... के पहले 5 पदों का योग है:", options: ["30", "45", "60", "75"], answer: "45" },
+                    { question: "बिंदु A(3, 4) और B(0, 0) के बीच की दूरी है:", options: ["4", "3", "5", "6"], answer: "5" },
+                    { question: "(2, -3) और (4, 1) को मिलाने वाली रेखा का मध्यबिंदु है:", options: ["(3, -1)", "(6, -2)", "(1, 2)", "(-1, 3)"], answer: "(3, -1)" },
+                    { question: "यदि दो त्रिभुज समरूप हैं, तो उनकी संगत भुजाएँ हैं:", options: ["बराबर", "समानुपाती", "असमान", "समांतर"], answer: "समानुपाती" },
+                    { question: "एक समकोण त्रिभुज में, यदि एक कोण 60° है, तो दूसरा गैर-समकोण कोण है:", options: ["30°", "90°", "45°", "60°"], answer: "30°" },
+                    { question: "sin 30° = ?", options: ["√3/2", "1", "1/2", "0"], answer: "1/2" },
+                    { question: "यदि tan A = √3, तो A = ?", options: ["30°", "45°", "60°", "90°"], answer: "60°" },
+                    { question: "sec²A – tan²A = ?", options: ["1", "0", "-1", "2"], answer: "1" },
+                    { question: "जमीन पर एक बिंदु से एक मीनार के शीर्ष का उन्नयन कोण 45° है। यदि मीनार की ऊँचाई 10 मीटर है, तो बिंदु से मीनार की दूरी है:", options: ["10 मी", "20 मी", "5 मी", "15 मी"], answer: "10 मी" },
+                    { question: "एक वृत्त पर बाह्य बिंदु से खींची गई स्पर्श रेखा की लंबाई है:", options: ["त्रिज्या से कम", "त्रिज्या के बराबर", "त्रिज्या से अधिक", "त्रिज्या के लंबवत"], answer: "त्रिज्या से अधिक" },
+                    { question: "एक वृत्त की स्पर्श रेखा हमेशा त्रिज्या के ___ होती है।", options: ["समांतर", "बराबर", "लंबवत", "स्पर्श रेखा"], answer: "लंबवत" },
+                    { question: "एक रेखाखंड AB को 3:2 के अनुपात में विभाजित करने के लिए, खींचे जाने वाले चापों की संख्या है:", options: ["2", "3", "5", "6"], answer: "5" },
+                    { question: "7 सेमी त्रिज्या वाले वृत्त का क्षेत्रफल है:", options: ["154 सेमी²", "44 सेमी²", "22 सेमी²", "143 सेमी²"], answer: "154 सेमी²" },
+                    { question: "14 सेमी व्यास वाले वृत्त की परिधि है:", options: ["44 सेमी", "88 सेमी", "22 सेमी", "154 सेमी"], answer: "44 सेमी" },
+                    { question: "4 सेमी भुजा वाले घन का आयतन है:", options: ["16 सेमी³", "64 सेमी³", "32 सेमी³", "48 सेमी³"], answer: "64 सेमी³" },
+                    { question: "7 सेमी त्रिज्या वाले गोले का पृष्ठीय क्षेत्रफल है:", options: ["616 सेमी²", "154 सेमी²", "308 सेमी²", "484 सेमी²"], answer: "616 सेमी²" },
+                    { question: "5, 10, 15, 20, 25 का माध्य है:", options: ["10", "15", "20", "25"], answer: "15" },
+                    { question: "2, 2, 3, 4, 5, 2, 6 का बहुलक है:", options: ["2", "3", "4", "5"], answer: "2" },
+                    { question: "एक सिक्के को उछालने में चित आने की प्रायिकता है:", options: ["0", "1", "1/2", "2"], answer: "1/2" },
+                    { question: "एक पासे को एक बार फेंका जाता है। 4 से बड़ी संख्या आने की प्रायिकता है:", options: ["1/6", "2/6", "3/6", "4/6"], answer: "2/6" },
+                    { question: "अंग्रेजी वर्णमाला से एक स्वर चुनने की प्रायिकता है:", options: ["5/26", "6/26", "21/26", "1/2"], answer: "5/26" }
+                ],
+                syllabusTitle: "पाठ्यक्रम कवर किया गया:",
+                syllabus: `<li><strong>वास्तविक संख्याएँ:</strong> HCF, LCM, दशमलव विस्तार</li><li><strong>बहुपद:</strong> शून्यक, विभाजन एल्गोरिथ्म</li><li><strong>रैखिक समीकरण:</strong> आलेखीय और बीजगणितीय विधियाँ</li><li><strong>द्विघात समीकरण:</strong> गुणनखंडन, सूत्र</li><li><strong>समांतर श्रेढ़ियाँ:</strong> nवाँ पद, योग</li><li><strong>निर्देशांक ज्यामिति:</strong> दूरी और विभाजन सूत्र</li><li><strong>त्रिभुज:</strong> समरूपता, पाइथागोरस प्रमेय</li><li><strong>त्रिकोणमिति:</strong> अनुपात, सर्वसमिकाएँ, ऊँचाई और दूरियाँ</li><li><strong>वृत्त:</strong> स्पर्श रेखाएँ, प्रमेय</li><li><strong>रचनाएँ:</strong> रेखा का विभाजन, स्पर्श रेखाएँ</li><li><strong>वृत्तों से संबंधित क्षेत्रफल:</strong> परिमाप, क्षेत्रफल, त्रिज्यखंड</li><li><strong>पृष्ठीय क्षेत्रफल और आयतन:</strong> घन, गोला, बेलन</li><li><strong>सांख्यिकी:</strong> माध्य, माध्यिका, बहुलक</li><li><strong>प्रायिकता:</strong> सैद्धांतिक प्रायिकता</li>`,
+                nameLabel: "अपना नाम दर्ज करें",
+                namePlaceholder: "जैसे, कुमार रवि",
+                startBtn: "क्विज़ शुरू करें",
+                prevBtn: "पिछला",
+                nextBtn: "अगला",
+                finishBtn: "समाप्त करें",
+                questionCount: (c, t) => `प्रश्न ${c} / ${t}`,
+                resultTitle: "क्विज़ समाप्त!",
+                scoreLabel: "आपका स्कोर",
+                timeLabel: "लिया गया समय",
+                detailsTitle: "अपने उत्तरों की समीक्षा करें",
+                yourAnswer: "आपका उत्तर",
+                correctAnswer: "सही उत्तर",
+                notAttempted: "प्रयास नहीं किया",
+                restartBtn: "फिर से शुरू करें",
+                telegramBtn: "टेलीग्राम पर भेजें",
+                nameError: "शुरू करने के लिए कृपया अपना नाम दर्ज करें।",
+                optionError: "जारी रखने के लिए कृपया एक विकल्प चुनें।",
+                modalOkBtn: "ठीक है"
+            }
+        };
+
+        // --- STATE VARIABLES ---
+        let currentLanguage = 'en';
+        let currentQuestion = 0;
+        let score = 0;
+        let timer = 0;
+        let timerInterval;
+        let userAnswers = [];
+        let userName = '';
+
+        // --- DOM ELEMENTS ---
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const contentArea = document.getElementById('content-area');
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCount = document.getElementById('question-count');
+        const progressBar = document.getElementById('progress-bar');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const timerElement = document.getElementById('timer');
+        const resultTitle = document.getElementById('result-title');
+        const resultName = document.getElementById('result-name');
+        const scoreLabel = document.getElementById('score-label');
+        const timeLabel = document.getElementById('time-label');
+        const resultScore = document.getElementById('result-score');
+        const resultTime = document.getElementById('result-time');
+        const detailsTitle = document.getElementById('details-title');
+        const resultDetails = document.getElementById('result-details');
+        const restartBtn = document.getElementById('restart-btn');
+        const telegramBtnText = document.querySelector('#telegram-btn span');
+        const customModal = document.getElementById('custom-modal');
+        const modalText = document.getElementById('modal-text');
+        const modalOkBtn = document.getElementById('modal-ok-btn');
+
+        // --- FUNCTIONS ---
+
+        function showModal(message) {
+            modalText.textContent = message;
+            customModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            customModal.classList.add('hidden');
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            const uiText = quizData[currentLanguage];
+            
+            langBtns.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(lang)) {
+                    btn.classList.replace('bg-gray-700', 'bg-indigo-600');
+                    btn.classList.replace('border-gray-600', 'border-indigo-500');
+                } else {
+                    btn.classList.replace('bg-indigo-600', 'bg-gray-700');
+                    btn.classList.replace('border-indigo-500', 'border-gray-600');
+                }
+            });
+
+            contentArea.innerHTML = `
+                <div class="bg-gray-900/50 p-4 rounded-lg mt-6 border-l-4 border-indigo-500">
+                    <h3 class="text-lg font-semibold mb-3 text-indigo-400">${uiText.syllabusTitle}</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-300 text-sm">${uiText.syllabus}</ul>
+                </div>
+                <div class="mt-6">
+                    <label for="name-input" class="block mb-2 text-sm font-medium text-gray-300">${uiText.nameLabel}</label>
+                    <input type="text" id="name-input" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3 placeholder-gray-400" placeholder="${uiText.namePlaceholder}" required>
+                </div>
+                <button onclick="startQuiz()" class="mt-6 w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-800 font-bold rounded-lg text-lg px-5 py-3 text-center transition-transform transform hover:scale-105 duration-300">${uiText.startBtn}</button>
+            `;
+            
+            modalOkBtn.textContent = uiText.modalOkBtn;
+        }
+
+        function startQuiz() {
+            const nameInput = document.getElementById('name-input');
+            userName = nameInput.value.trim();
+            if (!userName) {
+                showModal(quizData[currentLanguage].nameError);
+                return;
+            }
+            welcomeScreen.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            timer = 0;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timer++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timer / 60).toString().padStart(2, '0');
+            const seconds = (timer % 60).toString().padStart(2, '0');
+            timerElement.textContent = `${minutes}:${seconds}`;
+        }
+
+        function loadQuestion() {
+            const questions = quizData[currentLanguage].questions;
+            const question = questions[currentQuestion];
+
+            questionText.textContent = question.question;
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('button');
+                optionElement.className = "option p-4 w-full text-left rounded-lg transition-all duration-200 border-2 border-gray-600 bg-gray-700 hover:bg-gray-600 hover:border-indigo-500 font-medium";
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                if (userAnswers[currentQuestion] === index) {
+                    optionElement.classList.add('!bg-indigo-600', '!border-indigo-400', 'text-white', 'font-bold');
+                }
+                
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+
+            updateQuizUI();
+        }
+
+        function selectOption(index) {
+            userAnswers[currentQuestion] = index;
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.toggle('!bg-indigo-600', i === index);
+                opt.classList.toggle('!border-indigo-400', i === index);
+                opt.classList.toggle('text-white', i === index);
+                opt.classList.toggle('font-bold', i === index);
+            });
+            setTimeout(() => {
+                const questions = quizData[currentLanguage].questions;
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 300);
+        }
+
+        function nextQuestion() {
+            const questions = quizData[currentLanguage].questions;
+            if (userAnswers[currentQuestion] === undefined) {
+                showModal(quizData[currentLanguage].optionError);
+                return;
+            }
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+        
+        function updateQuizUI() {
+            const questions = quizData[currentLanguage].questions;
+            const uiText = quizData[currentLanguage];
+            
+            questionCount.textContent = uiText.questionCount(currentQuestion + 1, questions.length);
+            progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            prevBtn.textContent = uiText.prevBtn;
+            prevBtn.disabled = currentQuestion === 0;
+
+            nextBtn.textContent = (currentQuestion === questions.length - 1) ? uiText.finishBtn : uiText.nextBtn;
+        }
+
+        function showResults() {
+            clearInterval(timerInterval);
+            const questions = quizData[currentLanguage].questions;
+            const uiText = quizData[currentLanguage];
+            score = 0;
+
+            questions.forEach((q, i) => {
+                if (userAnswers[i] !== undefined && q.options[userAnswers[i]] === q.answer) {
+                    score++;
+                }
+            });
+
+            quizContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+
+            resultTitle.textContent = uiText.resultTitle;
+            resultName.textContent = userName;
+            scoreLabel.textContent = uiText.scoreLabel;
+            timeLabel.textContent = uiText.timeLabel;
+            resultScore.textContent = `${score} / ${questions.length}`;
+            
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+            resultTime.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            
+            detailsTitle.textContent = uiText.detailsTitle;
+            resultDetails.innerHTML = '';
+
+            questions.forEach((q, i) => {
+                const userAnswerIndex = userAnswers[i];
+                const selectedAnswer = userAnswerIndex !== undefined ? q.options[userAnswerIndex] : uiText.notAttempted;
+                const isCorrect = selectedAnswer === q.answer;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = `p-3 rounded-lg border-l-4 ${isCorrect ? 'bg-green-900/30 border-green-500' : 'bg-red-900/30 border-red-500'}`;
+                
+                resultItem.innerHTML = `
+                    <p class="font-bold text-white">${i + 1}. ${q.question}</p>
+                    <p class="text-sm mt-2 text-gray-400">Options: ${q.options.join(', ')}</p>
+                    <p class="text-sm mt-1 font-semibold ${isCorrect ? 'text-green-400' : 'text-red-400'}">
+                        ${uiText.yourAnswer}: ${selectedAnswer}
+                    </p>
+                    ${!isCorrect ? `<p class="text-sm font-semibold text-green-400">${uiText.correctAnswer}: ${q.answer}</p>` : ''}
+                `;
+                resultDetails.appendChild(resultItem);
+            });
+            
+            restartBtn.textContent = uiText.restartBtn;
+            telegramBtnText.textContent = uiText.telegramBtn;
+
+            // Automatically send results to Telegram
+            sendToTelegram(); 
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            userName = '';
+            
+            resultContainer.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            setLanguage('en');
+        }
+
+        // *** FIXED ASYNC FUNCTION TO SEND TELEGRAM MESSAGES IN CHUNKS ***
+        async function sendToTelegram() {
+            const botToken = '7824715442:AAEeBcDZhfZw1zZx4Q5fyIvpriXX-_C6pIE';
+            const chatId = '7562968631';
+            const questions = quizData[currentLanguage].questions;
+            const uiText = quizData[currentLanguage];
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+
+            // Helper function to perform the fetch request and handle errors
+            const sendMessage = async (text) => {
+                const encodedText = encodeURIComponent(text);
+                const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodedText}&parse_mode=Markdown`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (!data.ok) {
+                        // Throw an error with the description from Telegram
+                        throw new Error(data.description || 'Unknown API error');
+                    }
+                    return true; // Indicate success
+                } catch (error) {
+                    console.error('Telegram API Error:', error);
+                    // Show a specific error to the user
+                    showModal(`Failed to send results to Telegram. Error: ${error.message}`);
+                    return false; // Indicate failure
+                }
+            };
+
+            // 1. Send the main summary message
+            let summaryMessage = `*📊 Quiz Results for ${userName}*\n\n`;
+            summaryMessage += `✅ *Score:* ${score} / ${questions.length}\n`;
+            summaryMessage += `⏱️ *Time Taken:* ${minutes}m ${seconds}s\n`;
+            
+            const summarySent = await sendMessage(summaryMessage);
+            if (!summarySent) return; // Stop if the summary fails to send
+
+            // 2. Send the detailed review in chunks
+            let detailsChunk = '*📋 Detailed Review:*\n';
+            const CHUNK_SIZE = 5; // Number of questions per message chunk
+
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                const userAnswerIndex = userAnswers[i];
+                const selectedAnswer = userAnswerIndex !== undefined ? q.options[userAnswerIndex] : uiText.notAttempted;
+                const isCorrect = selectedAnswer === q.answer;
+                const icon = isCorrect ? '✅' : '❌';
+
+                const questionDetail = `\n*${i + 1}. ${q.question}*\n` +
+                                     `   Options: \`${q.options.join(', ')}\`\n` +
+                                     `   ${icon} ${uiText.yourAnswer}: \`${selectedAnswer}\`\n` +
+                                     `   ➡️ ${uiText.correctAnswer}: \`${q.answer}\`\n`;
+                
+                detailsChunk += questionDetail;
+
+                // Send the chunk if it's the end of a chunk group OR the very last question
+                if ((i + 1) % CHUNK_SIZE === 0 || i === questions.length - 1) {
+                    const chunkSent = await sendMessage(detailsChunk);
+                    if (!chunkSent) return; // Stop if a chunk fails
+                    detailsChunk = ''; // Reset for the next chunk
+                }
+            }
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            setLanguage('en');
+        };
+    </script>
+</body>
+</html>
+
