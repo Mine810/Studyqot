@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz | गणित प्रश्नोत्तरी</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Hind:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #f5f7fa;
+            --bg-dark: #1f2937;
+            --text-light: #111827;
+            --text-dark: #f9fafb;
+            --card-bg-light: rgba(255, 255, 255, 0.7);
+            --card-bg-dark: rgba(55, 65, 81, 0.7);
+            --border-light: rgba(255, 255, 255, 0.18);
+            --border-dark: rgba(255, 255, 255, 0.1);
+            --shadow-light: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --shadow-dark: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        html.dark {
+            color-scheme: dark;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #c3cfe2 100%);
+        }
+        .dark body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #4b5563 100%);
+        }
+        .hindi { font-family: 'Hind', sans-serif; }
+        .quiz-container {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            transition: all 0.5s;
+        }
+        .light .quiz-container {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-light);
+        }
+        .dark .quiz-container {
+            background-color: var(--card-bg-dark);
+            border: 1px solid var(--border-dark);
+            box-shadow: var(--shadow-dark);
+        }
+        .option-btn { transition: all 0.3s ease; }
+        .option-btn:hover { transform: translateY(-2px); }
+        .correct { background-color: #22c55e !important; color: white !important; border-color: #16a34a !important; }
+        .incorrect { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
+        .disabled-options { pointer-events: none; }
+        .theme-icon { transition: transform 0.5s; }
+        .dark .theme-icon { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="quiz-container w-full max-w-2xl p-6 md:p-8 rounded-2xl">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 id="quiz-title" class="text-2xl md:text-3xl font-bold">Math Quiz</h1>
+                <p id="quiz-subtitle" class="text-gray-600 dark:text-gray-400">Test your knowledge</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6 theme-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+                <button id="lang-en" class="px-3 py-1.5 text-sm font-medium rounded-lg">English</button>
+                <button id="lang-hi" class="px-3 py-1.5 text-sm font-medium rounded-lg">हिन्दी</button>
+            </div>
+        </div>
+
+        <!-- Name Input Screen -->
+        <div id="name-screen">
+            <h2 id="name-prompt" class="text-xl font-semibold mb-4">Enter your name to start</h2>
+            <input type="text" id="name-input" class="w-full p-3 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your Name / आपका नाम">
+            <div id="name-error" class="text-red-500 text-sm mt-2 hidden">Please enter your name. / कृपया अपना नाम दर्ज करें।</div>
+            <button id="start-btn" class="w-full mt-4 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105">Start Quiz</button>
+        </div>
+
+        <!-- Quiz Body -->
+        <div id="quiz-body" class="hidden">
+            <div class="flex justify-between items-baseline mb-4">
+                 <h2 id="question-text" class="text-xl md:text-2xl font-semibold">Question will appear here.</h2>
+                 <div class="flex items-center space-x-2">
+                    <span id="timer" class="text-sm font-medium text-gray-500 dark:text-gray-400">00:00</span>
+                    <p id="question-counter" class="text-sm text-gray-500 dark:text-gray-400 font-medium"></p>
+                 </div>
+            </div>
+           
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+            <div class="mt-8 flex justify-end">
+                <button id="next-btn" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 hidden">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Score Screen -->
+        <div id="score-screen" class="hidden text-center">
+            <h2 id="score-title" class="text-3xl font-bold mb-2">Quiz Completed!</h2>
+            <p id="score-text" class="text-xl text-gray-700 dark:text-gray-300 mb-2">Your score is:</p>
+            <p id="final-score" class="text-6xl font-bold text-blue-500 mb-4">0 / 20</p>
+            <p id="time-taken-text" class="text-lg text-gray-600 dark:text-gray-400 mb-6">Time Taken: <span id="final-time"></span></p>
+            <div id="telegram-status" class="mb-6 text-sm"></div>
+            <button id="restart-btn" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105">Restart Quiz</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const TELEGRAM_BOT_TOKEN = "7929570076:AAH2XP6MG_WtSCrxkb_xgNSYo7bdRDGBeWg";
+        const TELEGRAM_CHAT_ID = "1053142752";
+
+        const questions = [
+            // ... (20 questions from previous version) ...
+            { en: { question: "Which of the following is an integer?", options: ["1/2", "-5", "0.5", "√2"] }, hi: { question: "निम्नलिखित में से कौन सा एक पूर्णांक है?", options: ["1/2", "-5", "0.5", "√2"] }, answer: 1 },
+            { en: { question: "Which number is rational?", options: ["π (pi)", "√3", "22/7", "e"] }, hi: { question: "कौन सी संख्या परिमेय है?", options: ["π (pi)", "√3", "22/7", "e"] }, answer: 2 },
+            { en: { question: "Which of the following is an irrational number?", options: ["√4", "√9", "√7", "1.5"] }, hi: { question: "निम्नलिखित में से कौन सी एक अपरिमेय संख्या है?", options: ["√4", "√9", "√7", "1.5"] }, answer: 2 },
+            { en: { question: "What is the smallest whole number?", options: ["1", "-1", "0", "Not defined"] }, hi: { question: "सबसे छोटी पूर्ण संख्या क्या है?", options: ["1", "-1", "0", "परिभाषित नहीं"] }, answer: 2 },
+            { en: { question: "Which of the following numbers is even?", options: ["21", "33", "48", "55"] }, hi: { question: "निम्नलिखित में से कौन सी संख्या सम है?", options: ["21", "33", "48", "55"] }, answer: 2 },
+            { en: { question: "Which is an odd number?", options: ["100", "202", "304", "405"] }, hi: { question: "कौन सी एक विषम संख्या है?", options: ["100", "202", "304", "405"] }, answer: 3 },
+            { en: { question: "Which fraction is equivalent to 3/4?", options: ["6/8", "5/7", "4/5", "2/3"] }, hi: { question: "कौन सा भिन्न 3/4 के बराबर है?", options: ["6/8", "5/7", "4/5", "2/3"] }, answer: 0 },
+            { en: { question: "Is zero a rational number?", options: ["Yes", "No", "Cannot be determined", "Sometimes"] }, hi: { question: "क्या शून्य एक परिमेय संख्या है?", options: ["हाँ", "नहीं", "निर्धारित नहीं किया जा सकता", "कभी-कभी"] }, answer: 0 },
+            { en: { question: "The number -15 is a...", options: ["Whole number", "Natural number", "Integer", "Irrational number"] }, hi: { question: "संख्या -15 एक...", options: ["पूर्ण संख्या", "प्राकृतिक संख्या", "पूर्णांक", "अपरिमेय संख्या"] }, answer: 2 },
+            { en: { question: "What is the result of 1/2 + 1/4?", options: ["1/6", "2/6", "3/4", "1/8"] }, hi: { question: "1/2 + 1/4 का परिणाम क्या है?", options: ["1/6", "2/6", "3/4", "1/8"] }, answer: 2 },
+            { en: { question: "Which of these is NOT an integer?", options: ["-10", "0", "4.5", "100"] }, hi: { question: "इनमें से कौन सा एक पूर्णांक नहीं है?", options: ["-10", "0", "4.5", "100"] }, answer: 2 },
+            { en: { question: "Every whole number is a...", options: ["Natural number", "Rational number", "Irrational number", "None of these"] }, hi: { question: "प्रत्येक पूर्ण संख्या एक...", options: ["प्राकृतिक संख्या", "परिमेय संख्या", "अपरिमेय संख्या", "इनमें से कोई नहीं"] }, answer: 1 },
+            { en: { question: "The product of an even and an odd number is always...", options: ["Even", "Odd", "Prime", "Cannot say"] }, hi: { question: "एक सम और एक विषम संख्या का गुणनफल हमेशा होता है...", options: ["सम", "विषम", "अभाज्य", "कह नहीं सकते"] }, answer: 0 },
+            { en: { question: "Which represents an improper fraction?", options: ["1/2", "3/4", "7/5", "2/3"] }, hi: { question: "कौन सा एक अनुचित भिन्न का प्रतिनिधित्व करता है?", options: ["1/2", "3/4", "7/5", "2/3"] }, answer: 2 },
+            { en: { question: "The value of π (pi) is...", options: ["A rational number", "An integer", "An irrational number", "A whole number"] }, hi: { question: "π (पाई) का मान है...", options: ["एक परिमेय संख्या", "एक पूर्णांक", "एक अपरिमेय संख्या", "एक पूर्ण संख्या"] }, answer: 2 },
+            { en: { question: "Which is the largest negative integer?", options: ["-100", "-10", "-1", "0"] }, hi: { question: "सबसे बड़ा ऋणात्मक पूर्णांक कौन सा है?", options: ["-100", "-10", "-1", "0"] }, answer: 2 },
+            { en: { question: "What is 0 divided by 5?", options: ["5", "0", "1", "Undefined"] }, hi: { question: "0 को 5 से विभाजित करने पर क्या मिलता है?", options: ["5", "0", "1", "अपरिभाषित"] }, answer: 1 },
+            { en: { question: "The sum of two odd numbers is always...", options: ["Odd", "Even", "Prime", "A multiple of 3"] }, hi: { question: "दो विषम संख्याओं का योग हमेशा होता है...", options: ["विषम", "सम", "अभाज्य", "3 का गुणज"] }, answer: 1 },
+            { en: { question: "Which of these fractions is the smallest?", options: ["1/2", "1/3", "1/4", "1/5"] }, hi: { question: "इनमें से कौन सा भिन्न सबसे छोटा है?", options: ["1/2", "1/3", "1/4", "1/5"] }, answer: 3 },
+            { en: { question: "Are all integers rational numbers?", options: ["Yes", "No", "Only positive integers", "Only negative integers"] }, hi: { question: "क्या सभी पूर्णांक परिमेय संख्याएँ हैं?", options: ["हाँ", "नहीं", "केवल धनात्मक पूर्णांक", "केवल ऋणात्मक पूर्णांक"] }, answer: 0 }
+        ];
+
+        // --- DOM Elements ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const nameScreen = document.getElementById('name-screen');
+        const nameInput = document.getElementById('name-input');
+        const nameError = document.getElementById('name-error');
+        const startBtn = document.getElementById('start-btn');
+        const quizBodyEl = document.getElementById('quiz-body');
+        const scoreScreenEl = document.getElementById('score-screen');
+        const langEnBtn = document.getElementById('lang-en');
+        const langHiBtn = document.getElementById('lang-hi');
+        const questionTextEl = document.getElementById('question-text');
+        const questionCounterEl = document.getElementById('question-counter');
+        const optionsContainerEl = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const finalScoreEl = document.getElementById('final-score');
+        const restartBtn = document.getElementById('restart-btn');
+        const timerEl = document.getElementById('timer');
+        const finalTimeEl = document.getElementById('final-time');
+        const telegramStatusEl = document.getElementById('telegram-status');
+        
+        // --- UI Text Elements for Translation ---
+        const quizTitleEl = document.getElementById('quiz-title');
+        const quizSubtitleEl = document.getElementById('quiz-subtitle');
+        const namePromptEl = document.getElementById('name-prompt');
+        const scoreTitleEl = document.getElementById('score-title');
+        const scoreTextEl = document.getElementById('score-text');
+        const timeTakenTextEl = document.getElementById('time-taken-text');
+
+        // --- Quiz State ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentLang = 'en';
+        let userName = '';
+        let timerInterval;
+        let secondsElapsed = 0;
+        let userAnswers = [];
+
+        const translations = {
+            en: {
+                title: "Math Quiz", subtitle: "Test your knowledge", namePrompt: "Enter your name to start", startButton: "Start Quiz",
+                nextButton: "Next Question", scoreTitle: "Quiz Completed!", scoreText: "Your score is:", timeTaken: "Time Taken:",
+                restartButton: "Restart Quiz", sendingResults: "Sending results...", resultsSent: "Results sent to Telegram!",
+                resultsFailed: "Failed to send results.", nameError: "Please enter your name."
+            },
+            hi: {
+                title: "गणित प्रश्नोत्तरी", subtitle: "अपने ज्ञान का परीक्षण करें", namePrompt: "शुरू करने के लिए अपना नाम दर्ज करें", startButton: "प्रश्नोत्तरी शुरू करें",
+                nextButton: "अगला प्रश्न", scoreTitle: "प्रश्नोत्तरी पूरी हुई!", scoreText: "आपका स्कोर है:", timeTaken: "लिया गया समय:",
+                restartButton: "फिर से शुरू करें", sendingResults: "परिणाम भेजे जा रहे हैं...", resultsSent: "परिणाम टेलीग्राम पर भेजे गए!",
+                resultsFailed: "परिणाम भेजने में विफल।", nameError: "कृपया अपना नाम दर्ज करें।"
+            }
+        };
+
+        // --- Functions ---
+        
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            document.querySelectorAll('.hindi').forEach(el => el.classList.remove('hindi'));
+            if (lang === 'hi') {
+                document.querySelectorAll('h1, h2, p, button, input, span').forEach(el => el.classList.add('hindi'));
+            }
+
+            quizTitleEl.textContent = t.title;
+            quizSubtitleEl.textContent = t.subtitle;
+            namePromptEl.textContent = t.namePrompt;
+            startBtn.textContent = t.startButton;
+            nextBtn.textContent = t.nextButton;
+            scoreTitleEl.textContent = t.scoreTitle;
+            scoreTextEl.textContent = t.scoreText;
+            timeTakenTextEl.childNodes[0].nodeValue = t.timeTaken + " ";
+            restartBtn.textContent = t.restartButton;
+            nameError.textContent = t.nameError;
+
+            if (lang === 'en') {
+                langEnBtn.classList.add('bg-blue-500', 'text-white', 'dark:bg-blue-600');
+                langEnBtn.classList.remove('bg-gray-200', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-300');
+                langHiBtn.classList.add('bg-gray-200', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-300');
+                langHiBtn.classList.remove('bg-blue-500', 'text-white', 'dark:bg-blue-600');
+            } else {
+                langHiBtn.classList.add('bg-blue-500', 'text-white', 'dark:bg-blue-600');
+                langHiBtn.classList.remove('bg-gray-200', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-300');
+                langEnBtn.classList.add('bg-gray-200', 'text-gray-700', 'dark:bg-gray-700', 'dark:text-gray-300');
+                langEnBtn.classList.remove('bg-blue-500', 'text-white', 'dark:bg-blue-600');
+            }
+            
+            if (quizBodyEl.style.display !== 'hidden') {
+                loadQuestion();
+            }
+        }
+        
+        function startTimer() {
+            secondsElapsed = 0;
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const minutes = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                const seconds = (secondsElapsed % 60).toString().padStart(2, '0');
+                timerEl.textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function startQuiz() {
+            userName = nameInput.value.trim();
+            if (!userName) {
+                nameError.classList.remove('hidden');
+                return;
+            }
+            nameError.classList.add('hidden');
+            nameScreen.classList.add('hidden');
+            quizBodyEl.classList.remove('hidden');
+            startTimer();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showScore();
+                return;
+            }
+            nextBtn.classList.add('hidden');
+            optionsContainerEl.classList.remove('disabled-options');
+            
+            const currentQuestion = questions[currentQuestionIndex];
+            const questionData = currentQuestion[currentLang];
+
+            questionTextEl.textContent = questionData.question;
+            questionCounterEl.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+            optionsContainerEl.innerHTML = '';
+
+            questionData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerHTML = option;
+                button.classList.add('option-btn', 'w-full', 'p-4', 'text-left', 'rounded-lg', 'border-2', 'border-gray-300', 'dark:border-gray-600', 'bg-white/50', 'dark:bg-gray-800/50', 'hover:bg-blue-50', 'dark:hover:bg-gray-700', 'hover:border-blue-400', 'focus:outline-none');
+                if (currentLang === 'hi') button.classList.add('hindi');
+                button.dataset.index = index;
+                button.addEventListener('click', selectAnswer);
+                optionsContainerEl.appendChild(button);
+            });
+        }
+
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const selectedIndex = parseInt(selectedBtn.dataset.index);
+            const correctIndex = questions[currentQuestionIndex].answer;
+
+            optionsContainerEl.classList.add('disabled-options');
+
+            userAnswers.push({
+                question: questions[currentQuestionIndex].en.question,
+                options: questions[currentQuestionIndex].en.options,
+                selectedAnswer: selectedIndex,
+                correctAnswer: correctIndex
+            });
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                selectedBtn.classList.add('correct');
+            } else {
+                selectedBtn.classList.add('incorrect');
+                const correctBtn = optionsContainerEl.querySelector(`[data-index='${correctIndex}']`);
+                if(correctBtn) correctBtn.classList.add('correct');
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        function showScore() {
+            stopTimer();
+            quizBodyEl.classList.add('hidden');
+            scoreScreenEl.classList.remove('hidden');
+            finalScoreEl.textContent = `${score} / ${questions.length}`;
+            finalTimeEl.textContent = timerEl.textContent;
+            sendResultsToTelegram();
+        }
+
+        async function sendResultsToTelegram() {
+            telegramStatusEl.textContent = translations[currentLang].sendingResults;
+            telegramStatusEl.className = 'mb-6 text-sm text-yellow-500';
+
+            const timeTaken = timerEl.textContent;
+            let report = `*New Quiz Result!* 🎉\n\n`;
+            report += `*Name:* ${userName}\n`;
+            report += `*Score:* ${score} / ${questions.length}\n`;
+            report += `*Time Taken:* ${timeTaken}\n\n`;
+            report += `--- *Detailed Report* ---\n\n`;
+
+            userAnswers.forEach((ans, index) => {
+                report += `*Q${index + 1}:* ${ans.question}\n`;
+                report += `*Your Answer:* ${ans.options[ans.selectedAnswer]} ${ans.selectedAnswer === ans.correctAnswer ? '✅' : '❌'}\n`;
+                if (ans.selectedAnswer !== ans.correctAnswer) {
+                    report += `*Correct Answer:* ${ans.options[ans.correctAnswer]}\n`;
+                }
+                report += `\n`;
+            });
+
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: report,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                const data = await response.json();
+                if (data.ok) {
+                    telegramStatusEl.textContent = translations[currentLang].resultsSent;
+                    telegramStatusEl.className = 'mb-6 text-sm text-green-500';
+                } else {
+                    throw new Error(data.description);
+                }
+            } catch (error) {
+                console.error("Telegram API Error:", error);
+                telegramStatusEl.textContent = `${translations[currentLang].resultsFailed} (Error: ${error.message})`;
+                telegramStatusEl.className = 'mb-6 text-sm text-red-500';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            secondsElapsed = 0;
+            timerEl.textContent = "00:00";
+            telegramStatusEl.textContent = "";
+
+            scoreScreenEl.classList.add('hidden');
+            nameScreen.classList.remove('hidden');
+            nameInput.value = ""; // Clear name input
+        }
+
+        // --- Theme Toggle ---
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            applyTheme(isDark ? 'light' : 'dark');
+        });
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', () => {
+            currentQuestionIndex++;
+            loadQuestion();
+        });
+        restartBtn.addEventListener('click', restartQuiz);
+        langEnBtn.addEventListener('click', () => setLanguage('en'));
+        langHiBtn.addEventListener('click', () => setLanguage('hi'));
+        nameInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') startQuiz();
+        });
+
+        // --- Initial Load ---
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(savedTheme);
+        setLanguage('en');
+
+    </script>
+</body>
+</html>
