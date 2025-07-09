@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نوٹس: آشیانہ - نگار عظیم</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lateef:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Using a more traditional, book-like font */
+        body {
+            font-family: 'Lateef', serif;
+            background-color: #1a1a1a; /* A warmer, softer black */
+            color: #d4d4d4;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%232a2a2a" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+        
+        .latin-font {
+            font-family: 'Merriweather', serif;
+        }
+
+        .card {
+            background-color: #262626;
+            border-right: 4px solid #c9b068; /* Gold accent border */
+            border-radius: 8px 0 0 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            font-size: 2.25rem; /* Larger font for headers */
+            font-weight: 700;
+            color: #e2cb8a; /* Lighter gold color */
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card-header:hover {
+            background-color: rgba(201, 176, 104, 0.1);
+        }
+
+        .card-header i.fa-chevron-down {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            font-size: 1.5rem; /* Larger font for content */
+            line-height: 2.5rem;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            max-height: 2000px; /* Set a large max-height for open state */
+            opacity: 1;
+            overflow: hidden;
+        }
+
+        .card-content.hidden {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .card-header.collapsed .fa-chevron-down {
+            transform: rotate(-90deg);
+        }
+        
+        .icon {
+            color: #c9b068;
+            margin-left: 12px;
+        }
+        
+        .tag {
+            background-color: #404040;
+            color: #a3a3a3;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            display: inline-block;
+            border: 1px solid #525252;
+        }
+
+        #to-top-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px; /* Switched to left for RTL layout */
+            display: none;
+            z-index: 100;
+            background-color: #c9b068;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #to-top-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-6xl font-bold text-white mb-3" style="font-weight: 700;">سبق ۵: آشیانہ</h1>
+            <p class="text-4xl text-[#c9b068]">مصنفہ: نگار عظیم</p>
+            <div class="mt-6 space-x-2 space-x-reverse">
+                <span class="tag latin-font">Bihar Board Class 10</span>
+                <span class="tag">امتحان ۲۰۲۶ کے لیے اہم</span>
+            </div>
+        </header>
+
+        <!-- Author's Introduction -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-user-edit icon"></i>مصنفہ کا تعارف: نگار عظیم</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content">
+                <ul class="list-none space-y-4">
+                    <li><i class="fas fa-id-card icon"></i><strong>اصل نام:</strong> ملکہ مہر نگار</li>
+                    <li><i class="fas fa-pen-alt icon"></i><strong>قلمی نام:</strong> نگار عظیم</li>
+                    <li class="latin-font"><i class="fas fa-graduation-cap icon"></i><strong>تعلیم:</strong> M.A (اردو، ڈرائنگ، پینٹنگ)، Ph.D (جامعہ ملیہ اسلامیہ)</li>
+                    <li><i class="fas fa-book-open icon"></i><strong>پہلا افسانوی مجموعہ:</strong> "عکس" (۱۹۹۰)</li>
+                    <li><i class="fas fa-book icon"></i><strong>دوسرا مجموعہ:</strong> "گہن" (۱۹۹۹)</li>
+                    <li><i class="fas fa-map-marked-alt icon"></i><strong>سفر نامہ:</strong> "گردِ آوارگی"</li>
+                    <li><i class="fas fa-feather-alt icon"></i><strong>تنقیدی کام:</strong> ہرچرن سنگھ چاولہ اور بہادر شاہ ظفر پر کتابیں۔</li>
+                    <li><i class="fas fa-female icon"></i><strong>موضوعات:</strong> خواتین کے مسائل، معاشرتی جبر و استحصال۔</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Story Summary -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-book-reader icon"></i>افسانہ "آشیانہ" کا خلاصہ</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content">
+                <p class="leading-relaxed">
+                    یہ کہانی ایک بزرگ جوڑے، برکت علی صدیقی اور ان کی اہلیہ زرینہ کی نفسیات کو پیش کرتی ہے جو اپنے بیٹے سراج اور بہو عرفانہ کے ساتھ بنگلور میں رہتے ہیں۔ ہر طرح کی آسائش اور محبت کے باوجود، وہ اپنے ہی گھر میں اجنبیت، خالی پن اور اکتاہٹ محسوس کرتے ہیں۔ بیٹا اور بہو ان کا بہت خیال رکھتے ہیں لیکن انہیں کوئی کام نہیں کرنے دیتے، جس کی وجہ سے انہیں اپنی زندگی بے مقصد لگتی ہے۔ وہ محسوس کرتے ہیں کہ وہ اپنے بیٹے کے گھر میں "مہمان" ہیں، مالک نہیں۔ آخرکار، وہ اس آرام دہ زندگی کو چھوڑ کر اپنے پرانے، چھوٹے سے گھر "آشیانہ" میں واپس جانے کا فیصلہ کرتے ہیں تاکہ اپنی کھوئی ہوئی خود مختاری، اپنائیت اور زندگی کا مقصد دوبارہ حاصل کر سکیں۔
+                </p>
+            </div>
+        </div>
+        
+        <!-- Main Characters -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-users icon"></i>مرکزی کردار</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content">
+                <div class="space-y-6">
+                    <div class="p-4 bg-black bg-opacity-20 rounded-lg">
+                        <h3 class="text-2xl font-semibold text-amber-300 mb-2"><i class="fas fa-user-tie icon"></i>برکت علی صدیقی (شوہر)</h3>
+                        <p>ایک ریٹائرڈ شخص جو اپنے بیٹے کے گھر میں آرام کرتے کرتے تھک گئے ہیں۔ وہ اپنی آزادی اور پرانی زندگی کو یاد کرتے ہیں اور واپس اپنے گھر جانا چاہتے ہیں۔</p>
+                    </div>
+                     <div class="p-4 bg-black bg-opacity-20 rounded-lg">
+                        <h3 class="text-2xl font-semibold text-amber-300 mb-2"><i class="fas fa-user icon"></i>زرینہ (بیوی/راوی)</h3>
+                        <p>کہانی کی راوی اور برکت علی کی بیوی۔ وہ بھی بیٹے کے گھر میں خالی پن محسوس کرتی ہیں اور گھر کے کاموں میں حصہ نہ لے پانے کی وجہ سے خود کو بے کار سمجھتی ہیں۔</p>
+                    </div>
+                    <div class="p-4 bg-black bg-opacity-20 rounded-lg">
+                        <h3 class="text-2xl font-semibold text-amber-300 mb-2"><i class="fas fa-user-graduate icon"></i>سراج (بیٹا)</h3>
+                        <p>ایک فرمانبردار اور محبت کرنے والا بیٹا جو اپنے والدین کو ہر طرح کا آرام دینا چاہتا ہے، لیکن ان کی نفسیاتی ضروریات کو سمجھ نہیں پاتا۔</p>
+                    </div>
+                    <div class="p-4 bg-black bg-opacity-20 rounded-lg">
+                        <h3 class="text-2xl font-semibold text-amber-300 mb-2"><i class="fas fa-user-check icon"></i>عرفانہ (بہو)</h3>
+                        <p>ایک اچھی اور خیال رکھنے والی بہو جو اپنے ساس سسر کی بہت خدمت کرتی ہے، لیکن نادانستگی میں انہیں گھر کے نظام سے دور رکھتی ہے۔</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-language icon"></i>اہم الفاظ اور معنی</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content">
+                <ul class="grid md:grid-cols-2 gap-x-12 gap-y-4">
+                    <li><strong>عطا کرنا:</strong> دینا</li>
+                    <li><strong>فائز ہونا:</strong> عہدے پر مقرر ہونا</li>
+                    <li><strong>سبک دوش:</strong> ملازمت سے فارغ ہو جانا</li>
+                    <li><strong>دل جوئی:</strong> خوش کرنا، خیال رکھنا</li>
+                    <li><strong>شرمسار:</strong> شرمندہ</li>
+                    <li><strong>جوکھم:</strong> دشواری، پریشانی</li>
+                    <li><strong>نظام:</strong> انتظام، قرینہ</li>
+                    <li><strong>خود اعتمادی:</strong> اپنے آپ پر بھروسہ</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Important Questions -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-question-circle icon"></i>امتحان کے لیے اہم سوالات</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="card-content">
+                <h3 class="text-2xl font-bold text-amber-300 mt-4 mb-3">مختصر ترین سوالات (Objective)</h3>
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>نگار عظیم کا اصل نام کیا ہے؟ (جواب: ملکہ مہر نگار)</li>
+                    <li>نگار عظیم نے کس کس موضوع میں ایم اے کیا؟ (جواب: اردو، ڈرائنگ اور پینٹنگ)</li>
+                    <li>نگار عظیم کے اولین افسانوی مجموعے کا نام کیا ہے؟ (جواب: عکس)</li>
+                    <li>نگار عظیم کا مجموعہ "گہن" کب شائع ہوا؟ (جواب: ۱۹۹۹ میں)</li>
+                    <li>نگار عظیم کے سفر نامہ کا نام کیا ہے؟ (جواب: گردِ آوارگی)</li>
+                </ol>
+
+                <h3 class="text-2xl font-bold text-amber-300 mt-8 mb-3">مختصر سوالات (Short Answer)</h3>
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>نگار عظیم کی شخصیت پر پانچ جملے لکھئے۔</li>
+                    <li>صنفِ افسانہ پر پانچ جملے لکھئے۔</li>
+                </ol>
+
+                <h3 class="text-2xl font-bold text-amber-300 mt-8 mb-3">طویل سوالات (Long Answer)</h3>
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>سراج کی والدہ اپنے بیٹے کے گھر پر اکتاہٹ کیوں محسوس کرنے لگی؟</li>
+                    <li>زیرِ نصاب افسانہ "آشیانہ" کے مرکزی کردار پر روشنی ڈالئے۔</li>
+                    <li>نگار عظیم کی افسانوی خصوصیات بیان کیجئے۔</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 py-6 border-t border-gray-800">
+            <p class="text-gray-500 text-xl">امتحان کے لیے نیک خواہشات!</p>
+        </footer>
+
+    </div>
+
+    <button id="to-top-btn" title="اوپر جائیں"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+        // --- Collapsible Sections ---
+        const cardHeaders = document.querySelectorAll('.card-header');
+        cardHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                header.classList.toggle('collapsed');
+                content.classList.toggle('hidden');
+            });
+        });
+
+        // --- Back to Top Button ---
+        const toTopBtn = document.getElementById('to-top-btn');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                toTopBtn.style.display = "block";
+            } else {
+                toTopBtn.style.display = "none";
+            }
+        };
+        toTopBtn.addEventListener('click', () => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    </script>
+
+</body>
+</html>
+
