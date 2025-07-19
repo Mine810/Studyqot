@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology Quiz: Life Processes & Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+        }
+        .main-container {
+            background: linear-gradient(145deg, #1e293b, #0f172a); /* Slate 800 to Slate 900 */
+            border: 1px solid #334155; /* Slate 700 */
+        }
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .option-btn.selected {
+            background-color: #4f46e5; /* Indigo 600 */
+            border-color: #818cf8; /* Indigo 400 */
+            color: #ffffff;
+            transform: scale(1.02);
+        }
+        /* Result Screen Styles */
+        .result-card {
+            background: #1e293b; /* Slate 800 */
+            border: 1px solid #334155; /* Slate 700 */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .result-icon {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+        }
+        .result-correct {
+            border: 2px solid #22c55e; /* Green 500 */
+            background-color: rgba(34, 197, 94, 0.1);
+        }
+        .result-incorrect {
+            border: 2px solid #ef4444; /* Red 500 */
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        .user-pick {
+            position: relative;
+            background-color: #374151; /* Gray 700 */
+        }
+        .user-pick::before {
+            content: attr(data-label); /* Use attribute for dynamic label */
+            position: absolute;
+            top: -12px;
+            right: 10px;
+            background-color: #6366f1; /* Indigo 500 */
+            color: white;
+            padding: 2px 8px;
+            font-size: 10px;
+            border-radius: 9999px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #6366f1; /* Indigo 500 */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <div id="app-container" class="w-full max-w-4xl mx-auto">
+
+        <!-- Initial Setup Screen -->
+        <div id="setup-screen" class="main-container p-8 rounded-xl shadow-2xl space-y-8 text-center">
+            <div>
+                <h1 id="lang-prompt" class="text-3xl md:text-4xl font-bold text-white mb-6">Choose your language</h1>
+                <div class="flex justify-center gap-4">
+                    <button id="lang-en" class="btn bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg">English 🇬🇧</button>
+                    <button id="lang-hi" class="btn bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg text-lg">Hindi 🇮🇳</button>
+                </div>
+            </div>
+
+            <div id="name-container" class="hidden">
+                <h1 id="name-prompt" class="text-3xl md:text-4xl font-bold text-white mb-4">Enter your name</h1>
+                <input type="text" id="name-input" class="bg-slate-800 border-2 border-slate-600 text-white text-lg rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full max-w-sm mx-auto p-3 text-center" placeholder="Your Name">
+                <button id="start-quiz-btn" class="btn mt-6 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg text-xl">Start Quiz</button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="main-container p-6 rounded-xl shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <div id="question-counter" class="text-lg font-semibold text-indigo-400">Question 1/30</div>
+                    <div id="timer" class="text-lg font-bold bg-slate-700 text-white py-1 px-4 rounded-full flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
+                        <span>00:00</span>
+                    </div>
+                </div>
+                <div class="h-2 w-full bg-slate-700 rounded-full mb-6">
+                    <div id="progress-bar" class="h-2 bg-indigo-500 rounded-full transition-all duration-300" style="width: 3.33%"></div>
+                </div>
+                <h2 id="question-text" class="text-2xl md:text-3xl font-bold mb-8 min-h-[100px]"></h2>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Options will be injected here -->
+                </div>
+                <div class="flex justify-between mt-8">
+                    <button id="prev-btn" class="btn bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-6 rounded-lg">Previous</button>
+                    <button id="next-btn" class="btn bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-lg">Next</button>
+                    <button id="submit-btn" class="hidden btn bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-6 rounded-lg">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="main-container p-6 md:p-8 rounded-xl shadow-2xl text-center">
+                <h1 id="result-title" class="text-3xl md:text-4xl font-extrabold text-white mb-2">Quiz Completed!</h1>
+                <p id="result-name" class="text-xl text-indigo-400 font-semibold mb-8"></p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-lg">
+                    <div class="result-card">
+                        <div class="result-icon bg-green-500/20 text-green-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trophy-fill" viewBox="0 0 16 16"><path d="M2.5.5A.5.5 0 0 1 3 .5V2h10V.5a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5v1.293c.535.156 1.06.39 1.5.707a.5.5 0 0 1-.293.905c-.432-.276-.934-.51-1.465-.667V3h-1V1.5a.5.5 0 0 1-.5-.5h-.5a.5.5 0 0 1-.5.5V3h-6V1.5a.5.5 0 0 1-.5-.5h-.5a.5.5 0 0 1-.5.5V3H3V1.793c-.535.156-1.06.39-1.5.707a.5.5 0 0 1-.293-.905c.432-.276.934-.51-1.465-.667V.5a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5zM4.5 4a.5.5 0 0 1 .5.5v1h6v-1a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h.5z"/><path d="M14 7h-1v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/></svg>
+                        </div>
+                        <div>
+                            <p id="score-label" class="text-slate-400 text-left">Total Score</p>
+                            <p id="total-marks" class="text-3xl font-bold text-green-400 text-left"></p>
+                        </div>
+                    </div>
+                    <div class="result-card">
+                         <div class="result-icon bg-yellow-500/20 text-yellow-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-hourglass-split" viewBox="0 0 16 16"><path d="M2.5 15a.5.5 0 1 1 0-1h11a.5.5 0 1 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 9.5 9.5v-1c0-.701.478-1.236 1.011-1.492A3.5 3.5 0 0 0 7.5 5.5v1.35zM.5 1a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-14a.5.5 0 0 1-.5-.5v-1z"/></svg>
+                        </div>
+                        <div>
+                            <p id="time-label" class="text-slate-400 text-left">Time Taken</p>
+                            <p id="time-taken" class="text-3xl font-bold text-yellow-400 text-left"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="telegram-status" class="text-sm text-slate-400 mb-6 italic h-5 flex items-center justify-center gap-2"></div>
+
+                <h2 id="report-label" class="text-2xl font-bold text-white mb-4 border-t border-slate-700 pt-6">Detailed Report</h2>
+                <div id="detailed-report" class="space-y-6 text-left">
+                    <!-- Report will be injected here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DOM Elements ---
+        const setupScreen = document.getElementById('setup-screen');
+        const langPrompt = document.getElementById('lang-prompt');
+        const namePrompt = document.getElementById('name-prompt');
+        const langEnBtn = document.getElementById('lang-en');
+        const langHiBtn = document.getElementById('lang-hi');
+        const nameContainer = document.getElementById('name-container');
+        const nameInput = document.getElementById('name-input');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        
+        const quizScreen = document.getElementById('quiz-screen');
+        const questionCounter = document.getElementById('question-counter');
+        const timerEl = document.getElementById('timer').querySelector('span');
+        const progressBar = document.getElementById('progress-bar');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+
+        const resultScreen = document.getElementById('result-screen');
+        const resultTitle = document.getElementById('result-title');
+        const resultName = document.getElementById('result-name');
+        const scoreLabel = document.getElementById('score-label');
+        const totalMarks = document.getElementById('total-marks');
+        const timeLabel = document.getElementById('time-label');
+        const timeTakenEl = document.getElementById('time-taken');
+        const reportLabel = document.getElementById('report-label');
+        const telegramStatus = document.getElementById('telegram-status');
+        const detailedReport = document.getElementById('detailed-report');
+
+        // --- Language Translations ---
+        const translations = {
+            en: {
+                enterName: "Enter your name",
+                yourName: "Your Name",
+                startQuiz: "Start Quiz",
+                pleaseEnterName: "Please enter your name",
+                question: "Question",
+                congratulations: "Congratulations",
+                quizCompleted: "Quiz Completed!",
+                totalScore: "Total Score",
+                timeTaken: "Time Taken",
+                detailedReport: "Detailed Report",
+                yourPick: "Your Pick",
+                sendingSummary: "Sending summary...",
+                sendingReport: "Sending detailed report...",
+                reportSent: "✅ Report sent successfully!",
+                error: "❌ Error:",
+                networkError: "❌ Network Error:",
+                notAnswered: "Not Answered",
+                correct: "Correct",
+                previous: "Previous",
+                next: "Next",
+                submit: "Submit Quiz"
+            },
+            hi: {
+                enterName: "अपना नाम दर्ज करें",
+                yourName: "आपका नाम",
+                startQuiz: "क्विज़ शुरू करें",
+                pleaseEnterName: "कृपया अपना नाम दर्ज करें",
+                question: "प्रश्न",
+                congratulations: "बधाई हो",
+                quizCompleted: "क्विज़ पूरा हुआ!",
+                totalScore: "कुल स्कोर",
+                timeTaken: "लिया गया समय",
+                detailedReport: "विस्तृत रिपोर्ट",
+                yourPick: "आपका चयन",
+                sendingSummary: "सारांश भेजा जा रहा है...",
+                sendingReport: "विस्तृत रिपोर्ट भेजी जा रही है...",
+                reportSent: "✅ रिपोर्ट सफलतापूर्वक भेजी गई!",
+                error: "❌ त्रुटि:",
+                networkError: "❌ नेटवर्क त्रुटि:",
+                notAnswered: "उत्तर नहीं दिया गया",
+                correct: "सही",
+                previous: "पिछला",
+                next: "अगला",
+                submit: "सबमिट करें"
+            }
+        };
+
+        // --- Quiz Data (same as before) ---
+        const quizData = [
+            { q: { en: "In which part of the alimentary canal does the final digestion of proteins into amino acids occur?", hi: "आहारनाल के किस भाग में प्रोटीन का अमीनो एसिड में अंतिम पाचन होता है?" }, o: { en: ["Stomach", "Duodenum", "Jejunum", "Ileum"], hi: ["आमाशय", "ग्रहणी", "जेजुनम", "इलियम"] }, a: "Ileum" },
+            { q: { en: "The backflow of blood during the pumping of blood by the heart is prevented by:", hi: "हृदय द्वारा रक्त पंप करते समय रक्त का वापस प्रवाह किसके द्वारा रोका जाता है?" }, o: { en: ["Walls of ventricles", "Walls of atria", "Valves in the heart", "Septum"], hi: ["निलय की दीवारें", "अलिंद की दीवारें", "हृदय में वाल्व", "सेप्टम"] }, a: "Valves in the heart" },
+            { q: { en: "During vigorous physical exercise, lactic acid is formed from glucose inside the muscle cells because:", hi: "कठिन शारीरिक व्यायाम के दौरान, मांसपेशियों की कोशिकाओं के अंदर ग्लूकोज से लैक्टिक एसिड क्यों बनता है?" }, o: { en: ["There is an abundance of oxygen", "There is a lack of oxygen", "There is a lack of water", "There is an abundance of carbon dioxide"], hi: ["ऑक्सीजन की प्रचुरता होती है", "ऑक्सीजन की कमी होती है", "पानी की कमी होती है", "कार्बन डाइऑक्साइड की प्रचुरता होती है"] }, a: "There is a lack of oxygen" },
+            { q: { en: "The process of filtration of blood in the Bowman's capsule of the nephron is known as:", hi: "नेफ्रॉन के बोमन कैप्सूल में रक्त के निस्पंदन की प्रक्रिया को क्या कहा जाता है?" }, o: { en: ["Tubular Reabsorption", "Ultrafiltration", "Selective Secretion", "Osmoregulation"], hi: ["नलिकीय पुनरवशोषण", "अतिसूक्ष्म निस्पंदन", "चयनात्मक स्राव", "परासरण नियमन"] }, a: "Ultrafiltration" },
+            { q: { en: "Which of the following enzymes is responsible for the digestion of fats in the small intestine?", hi: "छोटी आंत में वसा के पाचन के लिए निम्नलिखित में से कौन सा एंजाइम जिम्मेदार है?" }, o: { en: ["Pepsin", "Trypsin", "Amylase", "Lipase"], hi: ["पेप्सिन", "ट्रिप्सिन", "एमाइलेज", "लाइपेज"] }, a: "Lipase" },
+            { q: { en: "The correct pathway of blood in the circulatory system is:", hi: "संचार प्रणाली में रक्त का सही मार्ग है:" }, o: { en: ["Atria → Ventricles → Arteries → Veins", "Ventricles → Atria → Veins → Arteries", "Atria → Ventricles → Veins → Arteries", "Ventricles → Arteries → Veins → Atria"], hi: ["अलिंद → निलय → धमनियां → नसें", "निलय → अलिंद → नसें → धमनियां", "अलिंद → निलय → नसें → धमनियां", "निलय → धमनियां → नसें → अलिंद"] }, a: "Ventricles → Arteries → Veins → Atria" },
+            { q: { en: "In autotrophic nutrition, which of the following is NOT required?", hi: "स्वपोषी पोषण में, निम्नलिखित में से किसकी आवश्यकता नहीं होती है?" }, o: { en: ["Carbon dioxide and water", "Chlorophyll", "Sunlight", "Oxygen"], hi: ["कार्बन डाइऑक्साइड और पानी", "क्लोरोफिल", "सूर्य का प्रकाश", "ऑक्सीजन"] }, a: "Oxygen" },
+            { q: { en: "The site of anaerobic respiration (glycolysis) in a cell is:", hi: "एक कोशिका में अवायवीय श्वसन (ग्लाइकोलाइसिस) का स्थल है:" }, o: { en: ["Mitochondria", "Cytoplasm", "Nucleus", "Ribosome"], hi: ["माइटोकॉन्ड्रिया", "कोशिकाद्रव्य", "नाभिक", "राइबोसोम"] }, a: "Cytoplasm" },
+            { q: { en: "The ascent of sap in plants (upward movement of water) is primarily driven by:", hi: "पौधों में रस का आरोहण (पानी का ऊपर की ओर बढ़ना) मुख्य रूप से किसके द्वारा संचालित होता है?" }, o: { en: ["Root pressure", "Photosynthesis", "Transpirational pull", "Respiration"], hi: ["जड़ दाब", "प्रकाश संश्लेषण", "वाष्पोत्सर्जन खिंचाव", "श्वसन"] }, a: "Transpirational pull" },
+            { q: { en: "Which component of blood is responsible for initiating the process of clotting?", hi: "रक्त का कौन सा घटक थक्का जमने की प्रक्रिया शुरू करने के लिए जिम्मेदार है?" }, o: { en: ["Red Blood Cells (RBCs)", "White Blood Cells (WBCs)", "Plasma", "Platelets (Thrombocytes)"], hi: ["लाल रक्त कोशिकाएं (आरबीसी)", "श्वेत रक्त कोशिकाएं (डब्ल्यूबीसी)", "प्लाज्मा", "प्लेटलेट्स (थ्रोम्बोसाइट्स)"] }, a: "Platelets (Thrombocytes)" },
+            { q: { en: "The functional unit of the human kidney is called:", hi: "मानव गुर्दे की कार्यात्मक इकाई कहलाती है:" }, o: { en: ["Neuron", "Nephron", "Alveolus", "Villi"], hi: ["न्यूरॉन", "नेफ्रॉन", "एल्वियोलस", "विली"] }, a: "Nephron" },
+            { q: { en: "Gaseous exchange in woody stems of plants takes place through:", hi: "पौधों के लकड़ी वाले तनों में गैसीय विनिमय किसके माध्यम से होता है?" }, o: { en: ["Stomata", "Lenticels", "Epidermis", "Root hairs"], hi: ["स्टोमेटा", "लेंटिसेल्स", "एपिडर्मिस", "जड़ के बाल"] }, a: "Lenticels" },
+            { q: { en: "The emulsification of fat is carried out by:", hi: "वसा का पायसीकरण किसके द्वारा किया जाता है?" }, o: { en: ["Hydrochloric acid", "Pancreatic juice", "Bile salts from the liver", "Salivary amylase"], hi: ["हाइड्रोक्लोरिक एसिड", "अग्नाशयी रस", "यकृत से पित्त लवण", "लार एमाइलेज"] }, a: "Bile salts from the liver" },
+            { q: { en: "What is the approximate glomerular filtration rate (GFR) in a healthy adult?", hi: "एक स्वस्थ वयस्क में अनुमानित ग्लोमेरुलर निस्पंदन दर (जीएफआर) क्या है?" }, o: { en: ["180 litres/day", "1.5 litres/day", "50 litres/day", "10 litres/day"], hi: ["180 लीटर/दिन", "1.5 लीटर/दिन", "50 लीटर/दिन", "10 लीटर/दिन"] }, a: "180 litres/day" },
+            { q: { en: "The energy currency of the cell, produced during respiration, is:", hi: "श्वसन के दौरान उत्पन्न होने वाली कोशिका की ऊर्जा मुद्रा है:" }, o: { en: ["ADP", "Pyruvate", "ATP", "Glucose"], hi: ["एडीपी", "पाइरूवेट", "एटीपी", "ग्लूकोज"] }, a: "ATP" },
+            { q: { en: "The gap between two neurons where the transfer of information occurs is called a:", hi: "दो न्यूरॉन्स के बीच का वह स्थान जहाँ सूचना का स्थानांतरण होता है, कहलाता है:" }, o: { en: ["Dendrite", "Axon", "Synapse", "Impulse"], hi: ["डेंड्राइट", "एक्सोन", "सिनेप्स", "आवेग"] }, a: "Synapse" },
+            { q: { en: "Which part of the human brain is the seat of intelligence, memory, and voluntary actions?", hi: "मानव मस्तिष्क का कौन सा भाग बुद्धि, स्मृति और स्वैच्छिक क्रियाओं का केंद्र है?" }, o: { en: ["Cerebellum", "Medulla", "Pons", "Cerebrum"], hi: ["सेरिबैलम", "मेडुला", "पोन्स", "सेरिब्रम"] }, a: "Cerebrum" },
+            { q: { en: "Which of the following is a plant hormone that promotes cell division?", hi: "निम्नलिखित में से कौन सा पादप हार्मोन कोशिका विभाजन को बढ़ावा देता है?" }, o: { en: ["Auxin", "Gibberellin", "Cytokinin", "Abscisic acid"], hi: ["ऑक्सिन", "जिबरेलिन", "साइटोकिनिन", "एब्सिसिक एसिड"] }, a: "Cytokinin" },
+            { q: { en: "The involuntary actions like blood pressure, salivation, and vomiting are controlled by the:", hi: "रक्तचाप, लार और उल्टी जैसी अनैच्छिक क्रियाएं किसके द्वारा नियंत्रित होती हैं?" }, o: { en: ["Cerebrum", "Cerebellum", "Medulla in the hindbrain", "Spinal cord"], hi: ["सेरिब्रम", "सेरिबैलम", "पश्चमस्तिष्क में मेडुला", "मेरु रज्जु"] }, a: "Medulla in the hindbrain" },
+            { q: { en: "A person has a loss of balance and body posture. Which part of his brain is likely affected?", hi: "एक व्यक्ति का संतुलन और शरीर की मुद्रा बिगड़ गई है। उसके मस्तिष्क का कौन सा भाग प्रभावित होने की संभावना है?" }, o: { en: ["Cerebrum", "Cerebellum", "Pons", "Medulla"], hi: ["सेरिब्रम", "सेरिबैलम", "पोन्स", "मेडुला"] }, a: "Cerebellum" },
+            { q: { en: "The growth of a pollen tube towards the ovule is an example of:", hi: "पराग नलिका का बीजांड की ओर बढ़ना किसका उदाहरण है?" }, o: { en: ["Phototropism", "Geotropism", "Hydrotropism", "Chemotropism"], hi: ["प्रकाशानुवर्तन", "गुरुत्वानुवर्तन", "जलानुवर्तन", "रसानुवर्तन"] }, a: "Chemotropism" },
+            { q: { en: "Which endocrine gland is known as the 'master gland' of the body?", hi: "कौन सी अंतःस्रावी ग्रंथि शरीर की 'मास्टर ग्रंथि' के रूप में जानी जाती है?" }, o: { en: ["Thyroid gland", "Adrenal gland", "Pancreas", "Pituitary gland"], hi: ["थायरॉयड ग्रंथि", "अधिवृक्क ग्रंथि", "अग्न्याशय", "पीयूष ग्रंथि"] }, a: "Pituitary gland" },
+            { q: { en: "A deficiency of which hormone leads to Diabetes mellitus?", hi: "किस हार्मोन की कमी से मधुमेह (डायबिटीज मेलिटस) होता है?" }, o: { en: ["Thyroxine", "Insulin", "Adrenaline", "Growth hormone"], hi: ["थायरोक्सिन", "इंसुलिन", "एड्रेनालाईन", "वृद्धि हार्मोन"] }, a: "Insulin" },
+            { q: { en: "The structural and functional unit of the nervous system is the:", hi: "तंत्रिका तंत्र की संरचनात्मक और कार्यात्मक इकाई है:" }, o: { en: ["Nephron", "Neuron", "Brain", "Spinal Cord"], hi: ["नेफ्रॉन", "न्यूरॉन", "मस्तिष्क", "मेरु रज्जु"] }, a: "Neuron" },
+            { q: { en: "The hormone responsible for the fight-or-flight response is:", hi: "'लड़ो या भागो' प्रतिक्रिया के लिए जिम्मेदार हार्मोन है:" }, o: { en: ["Thyroxine", "Insulin", "Adrenaline", "Estrogen"], hi: ["थायरोक्सिन", "इंसुलिन", "एड्रेनालाईन", "एस्ट्रोजन"] }, a: "Adrenaline" },
+            { q: { en: "The wilting of leaves is caused by which of the following plant hormones?", hi: "पत्तियों का मुरझाना निम्नलिखित में से किस पादप हार्मोन के कारण होता है?" }, o: { en: ["Auxin", "Gibberellin", "Cytokinin", "Abscisic acid"], hi: ["ऑक्सिन", "जिबरेलिन", "साइटोकिनिन", "एब्सिसिक एसिड"] }, a: "Abscisic acid" },
+            { q: { en: "The pathway taken by nerve impulses in a reflex action is called the:", hi: "एक प्रतिवर्त क्रिया में तंत्रिका आवेगों द्वारा लिया गया मार्ग कहलाता है:" }, o: { en: ["Reflex arc", "Synapse", "Motor pathway", "Sensory pathway"], hi: ["प्रतिवर्त चाप", "सिनेप्स", "मोटर मार्ग", "संवेदी मार्ग"] }, a: "Reflex arc" },
+            { q: { en: "Goitre is caused by the deficiency of:", hi: "घेंघा रोग किसकी कमी के कारण होता है?" }, o: { en: ["Calcium", "Sodium", "Iodine", "Iron"], hi: ["कैल्शियम", "सोडियम", "आयोडीन", "आयरन"] }, a: "Iodine" },
+            { q: { en: "Nastic movements in plants (like the folding of leaves in a 'touch-me-not' plant) are:", hi: "पौधों में नैस्टिक गतियाँ ('छुई-मुई' पौधे में पत्तियों का मुड़ना) हैं:" }, o: { en: ["Directional movements in response to a stimulus", "Non-directional movements in response to a stimulus", "Growth-dependent movements", "Caused by the hormone auxin"], hi: ["एक उत्तेजना की प्रतिक्रिया में दिशात्मक गति", "एक उत्तेजना की प्रतिक्रिया में गैर-दिशात्मक गति", "वृद्धि-निर्भर गति", "हार्मोन ऑक्सिन के कारण"] }, a: "Non-directional movements in response to a stimulus" },
+            { q: { en: "The part of the brain that connects the cerebrum and cerebellum to the spinal cord is the:", hi: "मस्तिष्क का वह भाग जो सेरिब्रम और सेरिबैलम को मेरु रज्जु से जोड़ता है, वह है:" }, o: { en: ["Hypothalamus", "Thalamus", "Brain Stem (Pons and Medulla)", "Corpus callosum"], hi: ["हाइपोथैलेमस", "थैलेमस", "मस्तिष्क स्तंभ (पोन्स और मेडुला)", "कॉर्पस कैलोसम"] }, a: "Brain Stem (Pons and Medulla)" }
+        ];
+
+        // --- State Variables ---
+        let currentLang = 'en';
+        let userName = '';
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let timerInterval;
+        let startTime;
+        
+        // --- Functions ---
+        const getTrans = (key) => translations[currentLang][key];
+
+        const selectLanguage = (lang) => {
+            currentLang = lang;
+            langPrompt.parentElement.classList.add('hidden');
+            nameContainer.classList.remove('hidden');
+            namePrompt.textContent = getTrans('enterName');
+            nameInput.placeholder = getTrans('yourName');
+            startQuizBtn.textContent = getTrans('startQuiz');
+            prevBtn.textContent = getTrans('previous');
+            nextBtn.textContent = getTrans('next');
+            submitBtn.textContent = getTrans('submit');
+        };
+
+        const startQuiz = () => {
+            userName = nameInput.value.trim();
+            if (userName === "") {
+                alert(getTrans('pleaseEnterName'));
+                return;
+            }
+            sessionStorage.setItem('quizInProgress', 'true');
+            setupScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            startTime = Date.now();
+            startTimer();
+            loadQuestion(currentQuestionIndex);
+        };
+
+        const startTimer = () => {
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+                const seconds = String(elapsedTime % 60).padStart(2, '0');
+                timerEl.textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        };
+
+        const loadQuestion = (index) => {
+            const question = quizData[index];
+            questionText.textContent = question.q[currentLang];
+            optionsContainer.innerHTML = '';
+            
+            const options = question.o[currentLang];
+            const originalOptions = question.o['en']; // Use English for consistent answer key
+
+            options.forEach((option, i) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn btn p-4 border-2 border-slate-600 rounded-lg text-left hover:bg-slate-700 hover:border-indigo-500';
+                button.textContent = option;
+                button.dataset.answer = originalOptions[i]; 
+                
+                if (userAnswers[index] === originalOptions[i]) {
+                    button.classList.add('selected');
+                }
+
+                button.onclick = () => selectAnswer(originalOptions[i]);
+                optionsContainer.appendChild(button);
+            });
+
+            updateNavigation();
+            updateProgressBar();
+            questionCounter.textContent = `${getTrans('question')} ${index + 1}/${quizData.length}`;
+        };
+        
+        const selectAnswer = (answer) => {
+            userAnswers[currentQuestionIndex] = answer;
+            loadQuestion(currentQuestionIndex); // Reload to show selection
+            setTimeout(() => {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    nextBtn.click();
+                }
+            }, 300);
+        };
+
+        const updateNavigation = () => {
+            prevBtn.style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+            nextBtn.style.display = currentQuestionIndex === quizData.length - 1 ? 'none' : 'block';
+            submitBtn.style.display = currentQuestionIndex === quizData.length - 1 ? 'block' : 'none';
+        };
+
+        const updateProgressBar = () => {
+            const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        };
+
+        const submitQuiz = () => {
+            clearInterval(timerInterval);
+            sessionStorage.removeItem('quizInProgress');
+            const totalTime = Math.floor((Date.now() - startTime) / 1000);
+            
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            displayAndSendResults(totalTime);
+        };
+
+        const displayAndSendResults = (totalTime) => {
+            let score = 0;
+            detailedReport.innerHTML = '';
+
+            // --- 1. Update UI with correct language ---
+            resultTitle.textContent = getTrans('quizCompleted');
+            resultName.textContent = `${getTrans('congratulations')}, ${userName}!`;
+            scoreLabel.textContent = getTrans('totalScore');
+            timeLabel.textContent = getTrans('timeTaken');
+            reportLabel.textContent = getTrans('detailedReport');
+
+            quizData.forEach((q, i) => {
+                const isCorrect = userAnswers[i] === q.a;
+                if (isCorrect) score++;
+
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'bg-slate-900 p-4 rounded-lg';
+                
+                const questionTitle = document.createElement('p');
+                questionTitle.className = 'font-bold mb-3';
+                questionTitle.textContent = `${i + 1}. ${q.q[currentLang]}`;
+                questionDiv.appendChild(questionTitle);
+                
+                const optionsList = document.createElement('div');
+                optionsList.className = 'space-y-2';
+
+                const originalOptions = q.o['en'];
+                const langOptions = q.o[currentLang];
+
+                langOptions.forEach((opt, j) => {
+                    const optionP = document.createElement('p');
+                    optionP.className = 'p-3 rounded-md border-2 border-transparent flex items-center gap-3';
+                    
+                    let icon = '';
+                    if (originalOptions[j] === q.a) {
+                        optionP.classList.add('result-correct');
+                        icon = '✅';
+                    } else if (originalOptions[j] === userAnswers[i]) {
+                        optionP.classList.add('result-incorrect');
+                        icon = '❌';
+                    }
+                    optionP.innerHTML = `<span>${icon}</span> <span>${opt}</span>`;
+
+                    if (originalOptions[j] === userAnswers[i]) {
+                        optionP.classList.add('user-pick');
+                        optionP.setAttribute('data-label', getTrans('yourPick'));
+                    }
+                    optionsList.appendChild(optionP);
+                });
+                
+                questionDiv.appendChild(optionsList);
+                detailedReport.appendChild(questionDiv);
+            });
+
+            // Update summary card
+            totalMarks.textContent = `${score} / ${quizData.length}`;
+            const minutes = String(Math.floor(totalTime / 60)).padStart(2, '0');
+            const seconds = String(totalTime % 60).padStart(2, '0');
+            timeTakenEl.textContent = `${minutes}m ${seconds}s`;
+
+            // --- 2. Prepare Telegram report in correct language ---
+            let summaryReport, detailedReportText;
+            if (currentLang === 'hi') {
+                summaryReport = `*📢 ${userName} के लिए क्विज़ परिणाम*\n\n🏆 *स्कोर:* ${score}/${quizData.length}\n⏱️ *लिया गया समय:* ${minutes}m ${seconds}s`;
+                detailedReportText = '*📝 विस्तृत रिपोर्ट*\n\n';
+                quizData.forEach((q, i) => {
+                    const mark = userAnswers[i] === q.a ? '✅' : '❌';
+                    const userAnswerInHindi = userAnswers[i] ? q.o['hi'][q.o['en'].indexOf(userAnswers[i])] : getTrans('notAnswered');
+                    const correctAnswerInHindi = q.o['hi'][q.o['en'].indexOf(q.a)];
+                    detailedReportText += `*प्रश्न ${i+1}:* ${q.q['hi']}\n`;
+                    detailedReportText += `*आपका उत्तर:* ${userAnswerInHindi}\n`;
+                    detailedReportText += `*सही उत्तर:* ${correctAnswerInHindi} ${mark}\n\n`;
+                });
+            } else {
+                summaryReport = `*📢 Quiz Result for ${userName}*\n\n🏆 *Score:* ${score}/${quizData.length}\n⏱️ *Time Taken:* ${minutes}m ${seconds}s`;
+                detailedReportText = '*📝 Detailed Report*\n\n';
+                quizData.forEach((q, i) => {
+                    const mark = userAnswers[i] === q.a ? '✅' : '❌';
+                    detailedReportText += `*Q${i+1}:* ${q.q['en']}\n`;
+                    detailedReportText += `*Your Answer:* ${userAnswers[i] || getTrans('notAnswered')}\n`;
+                    detailedReportText += `*Correct Answer:* ${q.a} ${mark}\n\n`;
+                });
+            }
+            
+            sendToTelegram(summaryReport, detailedReportText);
+        };
+
+        const sendToTelegram = async (summary, details) => {
+            const botToken = '7515435403:AAFZy4lBut4oWZ1L9JYHtsqskaZzv_q97K0';
+            const channelId = '-1002833692420';
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            const setStatus = (message, isLoading = false) => {
+                telegramStatus.innerHTML = `
+                    ${isLoading ? '<div class="spinner"></div>' : ''}
+                    <span>${message}</span>
+                `;
+            };
+
+            try {
+                setStatus(getTrans('sendingSummary'), true);
+                const summaryRes = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: channelId, text: summary, parse_mode: 'Markdown' })
+                });
+                const summaryResult = await summaryRes.json();
+                if (!summaryResult.ok) throw new Error(summaryResult.description);
+
+                setStatus(getTrans('sendingReport'), true);
+                const detailsRes = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: channelId, text: details, parse_mode: 'Markdown' })
+                });
+                const detailsResult = await detailsRes.json();
+                if (!detailsResult.ok) throw new Error(detailsResult.description);
+
+                setStatus(getTrans('reportSent'));
+                telegramStatus.style.color = '#22c55e';
+
+            } catch (error) {
+                setStatus(`${getTrans('error')} ${error.message}`);
+                telegramStatus.style.color = '#ef4444';
+            }
+        };
+
+        // --- Event Listeners ---
+        langEnBtn.addEventListener('click', () => selectLanguage('en'));
+        langHiBtn.addEventListener('click', () => selectLanguage('hi'));
+        startQuizBtn.addEventListener('click', startQuiz);
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        });
+
+        submitBtn.addEventListener('click', submitQuiz);
+        
+        window.onbeforeunload = (e) => {
+            if (sessionStorage.getItem('quizInProgress')) {
+                const message = "Are you sure you want to leave? Your progress will be lost.";
+                e.returnValue = message;
+                return message;
+            }
+        };
+    });
+    </script>
+</body>
+</html>
+
